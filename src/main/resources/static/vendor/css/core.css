@@ -15287,6 +15287,7 @@ html:not(.layout-menu-fixed) .menu-inner-shadow {
 }
 .layout-navbar.navbar-detached {
   padding: 0 1.5rem;
+  background-color: #fff;
 }
 .layout-navbar-fixed .layout-navbar.navbar-detached {
   width: calc(100% - calc(1.625rem * 2) - 16.25rem);
