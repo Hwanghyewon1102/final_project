@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
+<%@taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <html
   lang="en"
@@ -73,7 +74,85 @@
 
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">
-			
+				    <div class="card">
+				      <div class="card-header d-flex justify-content-between align-items-center">
+				        <h5 class="card-title mb-0">채권 목록 (미수금)</h5>
+				        <small class="text-muted">기준일: 2025-12-29</small>
+				      </div>
+
+				      <div class="card-body">
+				        <div class="table-responsive">
+				          <table class="table table-hover align-middle">
+				            <thead class="table-light">
+				              <tr>
+				                <th>채권 ID</th>
+				                <th>유형</th>
+				                <th class="text-end">공급가액</th>
+				                <th class="text-end">세액</th>
+				                <th class="text-end">합계</th>
+				                <th>발생일</th>
+				                <th>상태</th>
+				                <th class="text-center">관리</th>
+				              </tr>
+				            </thead>
+				            <tbody>
+				              <c:forEach var="r" items="${receivables}">
+				                <tr>
+				                  <td class="fw-semibold">${r.receivableId}</td>
+				
+				                  <td>
+				                    <span class="badge bg-label-primary">미수금</span>
+				                  </td>
+				
+				                  <td class="text-end">
+				                    <fmt:formatNumber value="${r.receivableSupplyAmount}" type="number" />
+				                  </td>
+				
+				                  <td class="text-end">
+				                    <fmt:formatNumber value="${r.receivableTaxAmount}" type="number" />
+				                  </td>
+				
+				                  <td class="text-end fw-bold text-primary">
+				                    <fmt:formatNumber value="${r.receivableTotalAmount}" type="number" />
+				                  </td>
+				
+				                  <td>${r.receivableDate}</td>
+				
+				                  <td>
+				                    <c:choose>
+				                      <c:when test="${r.receivableStatus eq 'O'}">
+				                        <span class="badge bg-label-warning">미지급</span>
+				                      </c:when>
+				                      <c:when test="${r.receivableStatus eq 'P'}">
+				                        <span class="badge bg-label-info">부분지급</span>
+				                      </c:when>
+				                      <c:when test="${r.receivableStatus eq 'C'}">
+				                        <span class="badge bg-label-success">완납</span>
+				                      </c:when>
+				                    </c:choose>
+				                  </td>
+				
+				                  <td class="text-center">
+				                    <a href="/receivable/detail?id=${r.receivableId}"
+				                       class="btn btn-sm btn-outline-primary">
+				                      상세
+				                    </a>
+				                  </td>
+				                </tr>
+				              </c:forEach>
+				
+				              <c:if test="${empty receivables}">
+				                <tr>
+				                  <td colspan="8" class="text-center text-muted py-4">
+				                    조회된 채권 데이터가 없습니다.
+				                  </td>
+				                </tr>
+				              </c:if>
+				            </tbody>
+				          </table>
+				        </div>
+				      </div>
+				    </div>
               </div>
             </div>
             <!-- / Content -->
