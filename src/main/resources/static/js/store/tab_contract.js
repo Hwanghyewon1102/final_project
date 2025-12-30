@@ -239,7 +239,7 @@ async function getContractDetail(contractId) {
                         <i class="${iconClass} me-2 fs-4"></i>
                         <span>${file.fileOriginalName}</span>
                     </div>
-                    <button class="btn btn-sm btn-outline-primary" onclick="downloadAttachment('${file.fileSavedName}')">
+                    <button class="btn btn-sm btn-outline-primary" onclick="downloadAttachment('${file.fileSavedName}', '${file.fileOriginalName}')">
                         <i class="bx bx-download"></i> 다운로드
                     </button>
                 `;
@@ -257,4 +257,15 @@ async function getContractDetail(contractId) {
 		alert("계약 상세 정보를 불러오는데 실패했습니다.");
 	} 
 	
+}
+
+function downloadAttachment(fileSavedName, fileOriginalName) {
+	if (!fileSavedName || !fileOriginalName) {
+		alert("파일 정보가 올바르지 않습니다.");
+		return;
+	}
+	
+	const url = `/fileDownload/contract?fileSavedName=${encodeURIComponent(fileSavedName)}&fileOriginalName=${encodeURIComponent(fileOriginalName)}`;
+	
+	location.href = url;
 }
