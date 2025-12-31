@@ -193,14 +193,7 @@
 								<label class="form-label" for="endDate">계약 종료일</label>
 								<input type="date" id="endDate" class="form-control" required />
 							</div>
-                            
-                            <div class="col-md-12">
-                                <label class="form-label" for="contractStatus">계약 상태</label>
-                                <select id="contractStatus" class="form-select">
-                                	<option value="0">PENDING (대기)</option>
-                                    <option value="1">ACTIVE (유효)</option>
-                                </select>
-                            </div>
+                          
 
                             <div class="col-12 mt-3">
                                 <label class="form-label">첨부파일</label>
@@ -419,7 +412,7 @@
             </p>
         </div>
 
-        <div style="margin-top: 40px; display: flex; justify-content: space-between; font-size: 10pt;">
+        <div style="margin-top: 250px; display: flex; justify-content: space-between; font-size: 10pt;">
             <div style="width: 48%; border: 1px solid #000; padding: 15px;">
                 <p style="font-weight: bold; margin-bottom: 10px; font-size: 11pt;">[가맹본부]</p>
                 <p>상 호: (주)카페ERP</p>

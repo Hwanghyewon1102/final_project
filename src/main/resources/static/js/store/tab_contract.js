@@ -130,7 +130,6 @@ async function submitContractRegistration() {
         deposit: document.getElementById('deposit'),
         startDate: document.getElementById('startDate'),
         endDate: document.getElementById('endDate'),
-        status: document.getElementById('contractStatus')
     };
 
     if (!els.storeId.value) { alert("가맹점명을 선택해주세요."); return; }
@@ -144,7 +143,16 @@ async function submitContractRegistration() {
     formData.append("contractDeposit", els.deposit.value);
     formData.append("contractStartDate", els.startDate.value);
     formData.append("contractEndDate", els.endDate.value);
-    formData.append("contractStatus", els.status.value);
+	
+	const startDate = new Date(els.startDate.value);
+	startDate.setHours(0, 0, 0, 0);
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	
+	var status = 1;
+	if (startDate > today) status = 0;
+	
+    formData.append("contractStatus", status);
 
     const fileInputs = document.getElementsByName("contractFiles");
     for (let input of fileInputs) {
@@ -275,8 +283,7 @@ function downloadContractPdf() {
     document.getElementById('pdfSignOwner').innerText = data.memName;
     document.getElementById('pdfSignAddress').innerText = storeAddr;
 
-    const datePart = data.contractCreatedAt.split('T')[0];
-	const [year, month, day] = datePart.split('-');
+	const [year, month, day] = data.contractStartDate.split('-');
     document.getElementById('pdfCreatedAt').innerText = `${year}년 ${month}월 ${day}일`;
 
     // html2pdf 변환 및 다운로드

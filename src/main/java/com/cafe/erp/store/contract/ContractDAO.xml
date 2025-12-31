@@ -81,4 +81,12 @@
 		</collection>
 	</resultMap>
 	
+	<update id="updateStatusToActive" parameterType="java.time.LocalDate">
+		UPDATE store_contract SET contract_status = 1 WHERE contract_start_date = #{today}
+	</update>
+	
+	<update id="updateStatusToExpired" parameterType="java.time.LocalDate">
+		UPDATE store_contract SET contract_status = 2 WHERE contract_end_date = #{yesterday}
+	</update>
+	
 </mapper>
