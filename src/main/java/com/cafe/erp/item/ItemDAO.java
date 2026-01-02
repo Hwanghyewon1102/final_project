@@ -19,6 +19,12 @@ public interface ItemDAO {
 	
 	public List<ItemPriceDetailDTO> priceList();
 	
-	public void updateItem(ItemDTO itemDTO);
+	public void updateItem(ItemUpdateDTO itemDTO);
+	public void updateItemPrice(ItemUpdateDTO itemDTO);
 	
+	public void priceCheck(ItemUpdateDTO itemDTO);
+	
+	public void insertPrice(ItemPriceDetailDTO itemPriceDetailDTO);
+	
+	public List<ItemPriceDetailDTO> searchPrice(String itemName, String category, Boolean itemPriceEnable, String vendorCode);
 }

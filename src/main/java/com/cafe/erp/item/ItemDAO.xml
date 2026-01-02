@@ -34,17 +34,13 @@
 		<!-- 물품 검색 -->
     	<select id="search" resultType="ItemDTO">
 		  SELECT
-		    vi.item_id as itemId,
+		    item_id,
 		    item_code,
 		    item_name,
 		    item_category,
 		    item_enable,
-		    item_auto_order,
-		    item_supply_price,
-		    item_price_enable
+		    item_auto_order
 		  FROM vendor_item vi
-		  JOIN vendor_item_price vip ON vi.item_id = vip.item_id 
-		  LEFT JOIN vendor v ON v.vendor_id = vip.vendor_id
 		  WHERE 1=1
 		  <if test="itemName != null and itemName != ''">
 		    AND item_name LIKE CONCAT('%', #{itemName}, '%')
@@ -53,14 +49,33 @@
 		    AND item_code LIKE CONCAT(#{category}, '%')
 		  </if>
 		  <if test="vendorCode != null and vendorCode != ''">
-		    AND vendor_code = #{vendorCode}
+		    AND EXISTS (
+			    SELECT 1
+			    FROM vendor_item_price vip
+			    JOIN vendor v ON v.vendor_id = vip.vendor_id
+			    WHERE vip.item_id = vi.item_id
+			      AND v.vendor_code = #{vendorCode}
+			  )
 		  </if>
 		</select>
     	
     	<!-- 물품 정보 업데이트 -->
-    	<update id="updateItem" parameterType="ItemDTO">
+    	<update id="updateItem" parameterType="ItemUpdateDTO">
     		update vendor_item set item_name=#{itemName}, item_enable=#{itemEnable}, item_auto_order=#{itemAutoOrder} where item_id = #{itemId};
     	</update>
+    	<!-- 물품 사용 불가 시 단가쪽 사용도 불가로 변경 -->
+    	<update id="updateItemPrice" parameterType="ItemUpdateDTO">
+    		update vendor_item_price set item_price_enable=#{itemEnable} where item_id = #{itemId};
+    	</update>
+    	<!-- 단가 사용여부 토글 -->
+    	<update id="priceCheck" parameterType="ItemUpdateDTO">
+    		update vendor_item_price set item_price_enable=#{itemPriceEnable} where item_price_id = #{itemPriceId}
+    	</update>
+    	
+    	<!-- 단가 정보 추가 -->
+    	<insert id="insertPrice" parameterType="itemPriceDetailDTO">
+    		insert into vendor_item_price values(null, #{itemSupplyPrice}, 0, #{itemId}, #{vendorId})
+    	</insert>
     	
     	<!-- 단가 목록 -->
     	<select id="priceList" resultType="ItemPriceDetailDTO">
@@ -68,13 +83,11 @@
 					vi.item_code as itemCode,
 			        vi.item_name as itemName,
 			        vi.item_category as itemCategory,
-			        vi.item_enable as itemEnable,
-			        vi.item_auto_order as itemAutoOrder,
 			        vip.item_supply_price as itemSupplyPrice, 
 			        vip.item_price_enable as itemPriceEnable,
-			        v.vendor_id as vendorId,
-			        v.vendor_name as vendorName,
-			        v.vendor_code as vendorCode
+			        vip.item_price_id as itemPriceId,
+			        v.vendor_code as vendorCode,
+			        v.vendor_name as vendorName
 			from vendor_item vi 
 			join vendor_item_price vip on vi.item_id = vip.item_id 
 			left join vendor v on v.vendor_id = vip.vendor_id
@@ -82,6 +95,36 @@
 			SUBSTRING(vi.item_code, 1, 2),
 			CAST(SUBSTRING(vi.item_code, 3) AS UNSIGNED)
     	</select>
+    	
+    	<!-- 단가 검색 -->
+    	<select id="searchPrice" resultType="ItemPriceDetailDTO">
+		  SELECT
+		    vi.item_id as itemId,
+			vi.item_code as itemCode,
+	        vi.item_name as itemName,
+	        vi.item_category as itemCategory,
+	        vip.item_supply_price as itemSupplyPrice, 
+	        vip.item_price_enable as itemPriceEnable,
+	        vip.item_price_id as itemPriceId,
+	        v.vendor_code as vendorCode,
+	        v.vendor_name as vendorName
+		  FROM vendor_item vi
+		  join vendor_item_price vip on vi.item_id = vip.item_id 
+		  left join vendor v on v.vendor_id = vip.vendor_id
+		  WHERE 1=1
+		  <if test="itemName != null and itemName != ''">
+		    AND item_name LIKE CONCAT('%', #{itemName}, '%')
+		  </if>
+		  <if test="category != null and category != ''">
+		    AND item_code LIKE CONCAT(#{category}, '%')
+		  </if>
+		  <if test="itemPriceEnable != null">
+			AND vip.item_price_enable = #{itemPriceEnable}
+		  </if>
+		  <if test="vendorCode != null and vendorCode != ''">
+			AND v.vendor_code = #{vendorCode}
+		  </if>
+		</select>
     	
     </mapper>
     

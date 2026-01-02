@@ -71,8 +71,60 @@
             <!-- Content -->
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">	
+              
+			  <h5 class="card-header">거래처 목록</h5>
+			  				
+              <!-- 검색 영역 -->
+				<div class="card mb-4">
+				  <div class="card-body">
+				      <div class="row g-3 align-items-end">
+				
+				        <!-- 품명 -->
+				        <div class="col-md-4">
+				          <label class="form-label">품명</label>
+				          <input
+				            type="text"
+				            class="form-control"
+				            id="searchItemName"
+				            placeholder="원재료명 입력"
+				            value="${param.itemName}"
+				          />
+				        </div>
+				
+				        <!-- 카테고리 -->
+				        <div class="col-md-3">
+				          <label class="form-label">카테고리</label>
+				          <select class="form-select" id="searchCategory">
+				            <option value="">전체</option>
+				            <option value="FD" ${param.category == 'FD' ? 'selected' : ''}>식품</option>
+				            <option value="NF" ${param.category == 'NF' ? 'selected' : ''}>비식품</option>
+				          </select>
+				        </div>
+				
+				        <!-- 거래처 코드 -->
+				        <div class="col-md-3">
+				          <label class="form-label">거래처 코드</label>
+				          <input
+				            type="text"
+				            class="form-control"
+				            id="searchVendorCode"
+				            placeholder="거래처 코드"
+				            value="${param.vendorCode}"
+				          />
+				        </div>
+				
+				        <!-- 검색 버튼 -->
+				        <div class="col-md-2 d-grid">
+				          <button type="button" class="btn btn-primary" onclick="searchItems()">
+				            <i class="bx bx-search"></i> 검색
+				          </button>
+				        </div>
+				
+				      </div>
+				  </div>
+				</div>
+				
 	            <div class="card">
-				  <h5 class="card-header">거래처 목록</h5>
 				  <div class="table-responsive">
 				    <table class="table">
 				      <thead>
@@ -81,73 +133,34 @@
 				          <th>업체명</th>
 				          <th>사업자번호</th>
 				          <th>대표자명</th>
+				          <th>사용여부</th>
+				          <th>생성일자</th>
+				          <th>담당자명</th>
 				          <th>전화번호</th>
-				          <th>관리</th>
+				          <th>이메일</th>
 				        </tr>
 				      </thead>
 				      <tbody>
-				        <%-- <c:forEach var="v" items="${vendorList}">
+				        <c:forEach var="v" items="${vendorList}">
 				          <tr>
 				            <td>${v.vendorCode}</td>
-				            <td>${v.companyName}</td>
-				            <td>${v.bizNo}</td>
-				            <td>${v.ceoName}</td>
-				            <td>${v.tel}</td>
+				            <td>${v.vendorName}</td>
+				            <td>${v.vendorBusinessNumber}</td>
+				            <td></td>
+				            <td>${v.vendorEnable}</td>
+				            <td>${v.vendorCreatedAt}</td>
+				            <td></td>
+				            <td></td>
+				            <td></td>
 				            <td>
 				              <button class="btn btn-sm btn-warning"
 				                data-bs-toggle="modal"
-				                data-bs-target="#editModal"
-				                onclick="setVendorEdit(
-				                  '${v.id}',
-				                  '${v.tel}',
-				                  '${v.managerTel}',
-				                  '${v.managerEmail}'
-				                )">
+				                data-bs-target="#editModal">
 				                수정
 				              </button>
 				            </td>
 				          </tr>
-				        </c:forEach> --%>
-				          <tr>
-				            <td>12854215</td>
-				            <td>롯데제과</td>
-				            <td>123-45-789</td>
-				            <td>주아안</td>
-				            <td>02-1234-5678</td>
-				            <td>
-				              <button class="btn btn-sm btn-warning"
-				                data-bs-toggle="modal"
-				                data-bs-target="#editModal"
-				                onclick="setVendorEdit(
-				                  '${v.id}',
-				                  '${v.tel}',
-				                  '${v.managerTel}',
-				                  '${v.managerEmail}'
-				                )">
-				                수정
-				              </button>
-				            </td>
-				          </tr>
-				          <tr>
-				            <td>17854785</td>
-				            <td>해태제과</td>
-				            <td>158-75-612</td>
-				            <td>홍길동</td>
-				            <td>02-1751-9874</td>
-				            <td>
-				              <button class="btn btn-sm btn-warning"
-				                data-bs-toggle="modal"
-				                data-bs-target="#editModal"
-				                onclick="setVendorEdit(
-				                  '${v.id}',
-				                  '${v.tel}',
-				                  '${v.managerTel}',
-				                  '${v.managerEmail}'
-				                )">
-				                수정
-				              </button>
-				            </td>
-				          </tr>
+				        </c:forEach>
 				      </tbody>
 				    </table>
 				  </div>

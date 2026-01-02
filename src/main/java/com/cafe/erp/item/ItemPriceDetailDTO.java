@@ -17,11 +17,13 @@ public class ItemPriceDetailDTO {
 	private boolean itemPriceEnable;
 	
 	// 품목
+	private int itemId;
 	private String itemCode;
 	private String itemName;
 	private String itemCategory;
 	
 	// 거래처
+	private int vendorId;
 	private int vendorCode;
 	private String vendorName;
 }

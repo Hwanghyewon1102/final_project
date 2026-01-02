@@ -110,17 +110,17 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-        <div data-i18n="Authentications">vendor</div>
+        <div data-i18n="Authentications">거래처</div>
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="/vendor/add" class="menu-link">
-            <div data-i18n="Notifications">Add Vendor</div>
+            <div data-i18n="Notifications">거래처 등록</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="/vendor/list" class="menu-link">
-            <div data-i18n="Notifications">Search Vendor</div>
+            <div data-i18n="Notifications">거래처 검색</div>
           </a>
         </li>
       </ul>

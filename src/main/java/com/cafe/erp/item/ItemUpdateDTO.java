@@ -10,6 +10,8 @@ import lombok.ToString;
 public class ItemUpdateDTO {
 	private int itemId;
     private String itemName;
-    private int itemEnable;
-    private int itemAutoOrder;
+    private boolean itemEnable;
+    private boolean itemAutoOrder;
+    private int itemPriceId;
+    private boolean itemPriceEnable;
 }

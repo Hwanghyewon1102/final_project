@@ -15,8 +15,7 @@ public class ItemDTO {
 	private String itemCategory;
 	private boolean itemEnable;
 	private boolean itemAutoOrder;
-	private int vendorId;
 	private int itemSupplyPrice;
-	private boolean itemPriceEnable;
+	private int vendorId;
 	
 }

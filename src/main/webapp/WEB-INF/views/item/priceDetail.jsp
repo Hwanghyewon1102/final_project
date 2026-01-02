@@ -88,7 +88,6 @@
 				            class="form-control"
 				            id="searchItemName"
 				            placeholder="원재료명 입력"
-				            value="${param.itemName}"
 				          />
 				        </div>
 				
@@ -97,21 +96,19 @@
 				          <label class="form-label">카테고리</label>
 				          <select class="form-select" id="searchCategory">
 				            <option value="">전체</option>
-				            <option value="FD" ${param.category == 'FD' ? 'selected' : ''}>식품</option>
-				            <option value="NF" ${param.category == 'NF' ? 'selected' : ''}>비식품</option>
+				            <option value="FD">식품</option>
+				            <option value="NF">비식품</option>
 				          </select>
 				        </div>
 				        
-				        <!-- 거래처 코드 -->
+				        <!-- 사용여부 -->
 				        <div class="col-md-2">
 				          <label class="form-label">사용여부</label>
-				          <input
-				            type="text"
-				            class="form-control"
-				            id="searchVendorCode"
-				            placeholder="사용"
-				            value="${param.itemPriceEnable}"
-				          />
+				          <select class="form-select" id="searchPriceEnable">
+							  <option value="">전체</option>
+							  <option value="true">사용</option>
+							  <option value="false">미사용</option>
+						  </select>
 				        </div>
 				
 				        <!-- 거래처 코드 -->
@@ -128,7 +125,7 @@
 				
 				        <!-- 검색 버튼 -->
 				        <div class="col-md-2 d-grid">
-				          <button type="button" class="btn btn-primary" onclick="searchItems()">
+				          <button type="button" class="btn btn-primary" onclick="searchPrices()">
 				            <i class="bx bx-search"></i> 검색
 				          </button>
 				        </div>
@@ -146,18 +143,20 @@
 				          <th>물품코드</th>
 				          <th>물품명</th>
 				          <th>거래처코드</th>
+				          <th>거래처명</th>
 				          <th>카테고리</th>
 				          <th>사용여부</th>
 				          <th>단가</th>
 				        </tr>
 				      </thead>
-				      <tbody>
+				      <tbody id="priceTableBody">
 				       <c:forEach var="itemPrice" items="${priceList}">
 				          <tr>
 				            <td>${itemPrice.itemCode}</td>
 				            <td>${itemPrice.itemName}</td>
 				            <td>${itemPrice.vendorCode}</td>
-				            <td>
+				            <td>${itemPrice.vendorName}</td>
+				            <td class="text">
 			           			<c:choose>
 						            <c:when test="${fn:startsWith(itemPrice.itemCode, 'FD')}">
 									  <span class="badge bg-label-warning">식품</span>
@@ -167,7 +166,7 @@
 									</c:otherwise>
 					            </c:choose>
 				            </td>
-				            <td>
+				            <td class="text">
 				            	<c:choose>
 						            <c:when test="${!itemPrice.itemPriceEnable}">
 									  <span class="badge bg-label-success">사용</span>
@@ -176,6 +175,16 @@
 									  <span class="badge bg-label-danger">미사용</span>
 									</c:otherwise>
 					            </c:choose>	
+					            
+								<form action="priceCheck" method="post">
+								  <input type="hidden" name="itemPriceId" value="${itemPrice.itemPriceId}">
+								  <input type="hidden" name="itemPriceEnable" value="${itemPrice.itemPriceEnable}">
+						            <button class="btn btn-sm btn-warning btn-update-item"
+									  data-bs-toggle="modal"
+									  data-bs-target="#editModal"">
+									  변경
+									</button>
+								</form>
 				            </td>
 				            <td class="price"><fmt:formatNumber value="${itemPrice.itemSupplyPrice}" pattern="#,###" /></td>
 				          </tr>
@@ -225,5 +234,7 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    
+    <script src="/js/item/search.js"></script>
   </body>
 </html>

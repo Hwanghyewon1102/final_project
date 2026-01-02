@@ -8,7 +8,7 @@
     		values (#{vendorCode}, #{vendorBusinessNumber}, #{vendorName}, now(), #{memberId})
     	</insert>
     	
-    	<select id="findAll">
+    	<select id="findAll" resultType="VendorDTO">
     		select * from vendor
     	</select>
     </mapper>

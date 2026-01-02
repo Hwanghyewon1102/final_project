@@ -77,7 +77,7 @@
 				  <h5 class="card-header">원재료 등록</h5>
 				  <div class="card-body">
 				    <form action="/item/add" method="post">
-					  <!-- 카테고리 -->
+					  <!-- 거래처코드 -->
 				      <div class="mb-3">
 				        <label class="form-label">거래처코드</label>
 				        <select class="form-select" name="vendorId">

@@ -177,7 +177,7 @@
 							      data-bs-target="#editModal"
 							      data-id="${item.itemId}"
 							      data-name="${item.itemName}">
-							      단가 수정
+							      단가 등록
 							    </button>
 							  </td>
 						    </tr>
@@ -209,7 +209,7 @@
 	<!-- 수정 모달창 -->
 	<div class="modal fade" id="editModal" tabindex="-1">
 	  <div class="modal-dialog">
-	    <form class="modal-content" action="/item/update" method="post">
+	    <form class="modal-content" method="post">
 	      <div class="modal-header">
 	        <h5 class="modal-title">title</h5>
 	        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -218,13 +218,27 @@
 	      <div class="modal-body">
 	        <input type="hidden" name="itemId" id="itemId">
 	
-			<!-- 물품 수정 / 단가 수정 변경(속성값 readonly) -->
+			<!-- 물품 수정 / 단가 등록 변경(속성값 readonly) -->
 	        <div class="mb-3">
 	          <label class="form-label">물품명</label>
 	          <input type="text" class="form-control" name="itemName" id="itemName">
 	        </div>
-	 		
-	 		<!-- 단가 수정 시 -->
+	        
+	 		<!-- 단가 등록 -->
+	        <!-- 거래처 코드 -->
+	        <div class="mb-3 priceBox">
+		        <label class="form-label">거래처코드</label>
+		        <select class="form-select" name="vendorId">
+		          <c:forEach var="v" items="${vendorList}">
+				    <option value="${v.vendorId}">
+				      ${v.vendorName}
+				    </option>
+				    
+				  </c:forEach>
+		        </select>
+		    </div>
+		    				    	
+	 		<!-- 단가 등록 시 -->
 	        <div class="mb-3 priceBox">
 	          <label class="form-label">단가</label>
 	          <input type="text" class="form-control" name="itemSupplyPrice" id="itemPrice">
@@ -245,15 +259,6 @@
 	          <select class="form-select" name="itemAutoOrder" id="autoOrderUseYn">
 	            <option value="0">승인</option>
 	            <option value="1">미승인</option>
-	          </select>
-	        </div>
-	        
-	 		<!-- 단가 수정 시 -->
-	        <div class="mb-3 priceBox">
-	          <label class="form-label">단가사용여부</label>
-	          <select class="form-select" name="itemPriceEnable" id="priceUseYn">
-	            <option value="0">사용</option>
-	            <option value="1">미사용</option>
 	          </select>
 	        </div>
 	        

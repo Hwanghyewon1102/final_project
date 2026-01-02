@@ -52,7 +52,24 @@ public class ItemService {
 		return itemDAO.priceList();
 	}
 	
-	public void updateItem(ItemDTO itemDTO) {
+	// 아이템 사용정보 수정
+	public void updateItem(ItemUpdateDTO itemDTO) {
 		itemDAO.updateItem(itemDTO);
+	}
+	public void updateItemPrice(ItemUpdateDTO itemDTO) {
+		itemDAO.updateItemPrice(itemDTO);
+	}
+	
+	// 단가 사용여부 수정
+	public void priceCheck(ItemUpdateDTO itemDTO) {
+		itemDAO.priceCheck(itemDTO);
+	}
+	
+	public void insertPrice(ItemPriceDetailDTO itemPriceDetailDTO) {
+		itemDAO.insertPrice(itemPriceDetailDTO);
+	}
+	
+	public List<ItemPriceDetailDTO> searchPrice(String itemName, String category, Boolean itemPriceEnable, String vendorCode) {
+		return itemDAO.searchPrice(itemName,category,itemPriceEnable,vendorCode);
 	}
 }

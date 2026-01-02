@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ public class ItemController {
 	}
 	
 	@PostMapping("add")
+	@Transactional
 	public void add(ItemDTO itemDTO) {
 		// itemId null -> add() 실행되면서 itemId 삽입
 		itemService.add(itemDTO);
@@ -45,6 +47,8 @@ public class ItemController {
 	@GetMapping("list")
 	public String itemList(Model model) {
 	    model.addAttribute("ItemList", itemService.list());
+	    List<VendorDTO> vendorList = vendorService.findAll();
+		model.addAttribute("vendorList", vendorList);
 	  //System.out.println(itemService.list().iterator().next().toString());
 	    return "item/list";
 	}
@@ -65,10 +69,39 @@ public class ItemController {
 		model.addAttribute("priceList", priceList);
 	}
 	
-	@PostMapping("update")
-	public String updateItem(ItemDTO itemDTO) {
+	@PostMapping("updateItem")
+	@Transactional
+	public String updateItem(ItemUpdateDTO itemDTO) {
 		System.out.println(itemDTO.getItemId());
 		itemService.updateItem(itemDTO);
-		return "item/list";
+		itemService.updateItemPrice(itemDTO);
+		System.out.println(itemDTO.toString());
+		return "redirect:./list";
+	}
+	@PostMapping("priceCheck")
+	public String priceCheck(ItemUpdateDTO itemDTO) {
+		if(itemDTO.isItemPriceEnable() == true) {
+			itemDTO.setItemPriceEnable(false);
+		} else {
+			itemDTO.setItemPriceEnable(true);			
+		}
+		itemService.priceCheck(itemDTO);
+		return "redirect:./priceDetail";
+	}
+	
+	@PostMapping("insertPrice")
+	public String insertPrice(ItemPriceDetailDTO itemPriceDetailDTO) {
+		itemService.insertPrice(itemPriceDetailDTO);
+		System.out.println(itemPriceDetailDTO.toString());
+		return "redirect:./list";
+	}
+	
+	@GetMapping("searchPrice")
+	@ResponseBody
+	public List<ItemPriceDetailDTO> searchPrice(@RequestParam(required = false) String itemName,
+    		@RequestParam(required = false) String category,
+    		@RequestParam(required = false) Boolean itemPriceEnable,
+    		@RequestParam(required = false) String vendorCode) {
+		return itemService.searchPrice(itemName, category, itemPriceEnable, vendorCode);
 	}
 }
