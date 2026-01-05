@@ -83,15 +83,15 @@
               <div class="row">
               
 			    <div class="col-12 px-0">
-                    <ul class="nav nav-pills-custom ps-0" role="tablist">
+                    <ul class="nav nav-pills mb-3" role="tablist">
                         <li class="nav-item">
-                        	<a href="/store/list"><i class="bx bx-store me-1"></i> 가맹점 정보</a>
+                        	<a href="/store/list" class="nav-link"><i class="bx bx-store me-1"></i> 가맹점 정보</a>
                         </li>
                         <li class="nav-item">
-                        	<a href="/store/contract/list"><i class="bx bx-file me-1"></i> 계약 기록</a>
+                        	<a href="/store/contract/list" class="nav-link active"><i class="bx bx-file me-1"></i> 계약 기록</a>
                         </li>
                         <li class="nav-item">
-                        	<a href="/store/evaluation"><i class="bx bx-clipboard me-1"></i> 평가 현황</a>
+                        	<a href="/store/evaluation" class="nav-link"><i class="bx bx-clipboard me-1"></i> 평가 현황</a>
                         </li>
                     </ul>
                 </div>
@@ -112,15 +112,23 @@
 					                    </select>
 					                </div>
 				
-					                <div class="col-12 col-lg-3">
+					                <div class="col-12 col-lg-2">
 					                    <label class="form-label small">계약 시작월</label>
 					                    <div class="input-group">
 					                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
 					                        <input type="text" class="form-control bg-white" id="searchStartMonthFrom" placeholder="시작월을 선택하세요" readonly />
 					                    </div>
 					                </div>
+					                
+					                <div class="col-12 col-lg-2">
+					                    <label class="form-label small">계약 종료월</label>
+					                    <div class="input-group">
+					                        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
+					                        <input type="text" class="form-control bg-white" id="searchEndMonthFrom" placeholder="시작월을 선택하세요" readonly />
+					                    </div>
+					                </div>
 					
-					                <div class="col-12 col-lg-4">
+					                <div class="col-12 col-lg-2">
 					                    <label class="form-label small">가맹점명</label>
 					                    <div class="input-group input-group-merge">
 					                        <span class="input-group-text"><i class="bx bx-search"></i></span>
@@ -549,6 +557,18 @@
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
     <!-- / Layout wrapper -->
+    
+    <script>
+	    const currentPath = window.location.pathname;
+	
+	    document.querySelectorAll('.nav-pills .nav-link').forEach(link => {
+	        if (link.getAttribute('href') === currentPath) {
+	            link.classList.add('active');
+	        } else {
+	            link.classList.remove('active');
+	        }
+	    });
+	</script>
     
 
     <!-- Core JS -->
