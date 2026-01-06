@@ -90,17 +90,17 @@
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
-          <a href="/product/add" class="menu-link">
+          <a href="/item/add" class="menu-link">
             <div data-i18n="Account">물품등록</div>
           </a>
         </li>
         <li class="menu-item">
-          <a href="/product/list" class="menu-link">
+          <a href="/item/list" class="menu-link">
             <div data-i18n="Notifications">물품검색</div>
           </a>
         </li>
         <li class="menu-item">
-          <a href="/product/priceDetail" class="menu-link">
+          <a href="/item/priceDetail" class="menu-link">
             <div data-i18n="Notifications">단가조회</div>
           </a>
         </li>
