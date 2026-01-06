@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ page import="java.time.LocalDate" %>
-
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <html
   lang="ko"
   class="light-style layout-menu-fixed"
@@ -81,7 +81,13 @@
 
               <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">사원 목록 (총 124명)</h5>
+                    <div class="mb-3">
+                    	<h5>현재 사원 수: ${activeCount}명</h5>
+                    	<div>
+						    <span>(재직원: ${totalCount}명 | </span>
+						    <span>퇴사자: ${totalCount - activeCount}명)</span>
+                    	</div>
+					</div>
                     <div>
                         <button type="button" class="btn btn-outline-success me-2">
                             <i class='bx bx-download me-1'></i> 엑셀 다운로드
