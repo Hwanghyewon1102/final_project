@@ -1,6 +1,7 @@
 package com.cafe.erp.files;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -21,6 +22,9 @@ public class FileController {
 	
 	@Value("${erp.upload.contract}")
 	private String contractPath;
+	
+	@Value("${erp.upload.profile}")
+	private String profilePath;
 
 	@GetMapping("contract")
 	public ResponseEntity<Resource> contractFile(@RequestParam String fileSavedName, @RequestParam String fileOriginalName) {
@@ -44,5 +48,35 @@ public class FileController {
             return ResponseEntity.internalServerError().build();
         }
 	}
+	
+	@GetMapping("profile")
+    public ResponseEntity<Resource> Profile(@RequestParam String fileSavedName){
+        try {
+            Path filePath = Paths.get(profilePath).resolve(fileSavedName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            
+            if (!resource.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            String contentType = "image/jpeg"; 
+            String lowerName = fileSavedName.toLowerCase();
+            
+            if(lowerName.endsWith(".png")) {
+                contentType = "image/png";
+            } else if(lowerName.endsWith(".gif")) {
+                contentType = "image/gif";
+            }
+            
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + fileSavedName + "\"")
+                    .header(HttpHeaders.CONTENT_TYPE, contentType)
+                    .body(resource);
+                    
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 	
 }

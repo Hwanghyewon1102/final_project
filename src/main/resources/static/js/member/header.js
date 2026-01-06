@@ -19,3 +19,13 @@
 		    if (view) view.innerText = dayString;
 	}
 		date();
+		
+		
+
+	$(document).ready(function(){
+		$(document).on('click', '#inCommute', function(){
+		        if(!confirm("현재 시간으로 출근하시겠습니까?")) return;
+		})
+		
+		
+	})

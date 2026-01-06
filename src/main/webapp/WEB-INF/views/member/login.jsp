@@ -144,7 +144,7 @@
               <span>ERP</span>
           </div>
 
-          <form action="member/login" class="auth-login-form" method="post">
+          <form action="/member/login" class="auth-login-form" method="post">
             <input type="text" name="memberId" id="memberId" placeholder="아이디를 입력하세요" />
 
             <input type="password" name="memPassword" id="memPasswrod" placeholder="비밀번호를 입력하세요" />
@@ -159,7 +159,6 @@
 
         </div>
       </div>
-          <!-- /Register -->
 
     <!-- / Content -->
 
