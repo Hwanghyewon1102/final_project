@@ -1,7 +1,9 @@
 package com.cafe.erp.security;
 
 import java.util.Collection;
+import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +11,7 @@ import com.cafe.erp.member.MemberDTO;
 
 public class UserDTO implements UserDetails{
 
+	@Autowired
 	private MemberDTO member;
 	
 	public UserDTO(MemberDTO memberDTO) {
@@ -35,7 +38,19 @@ public class UserDTO implements UserDetails{
 	}
 	
 	
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		UserDTO other = (UserDTO) obj;
+		return this.member.getMemberId() == other.member.getMemberId();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.member.getMemberId());
+	}
 	
 	
 	

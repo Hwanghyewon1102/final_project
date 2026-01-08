@@ -1,5 +1,7 @@
 package com.cafe.erp.member.commute;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -29,7 +31,12 @@ public class MemberCommuteController {
 		
 		int memberId = userDTO.getMember().getMemberId();
 		
-		int result = commuteService.checkIn(memberId);
+		MemberCommuteDTO commuteDTO = new MemberCommuteDTO();
+		commuteDTO.setMemberId(memberId);
+		
+		commuteDTO.setMemCommuteInTime(LocalDateTime.now());
+		
+		int result = commuteService.checkIn(commuteDTO);
 		
 		if(result > 0) {
 			return "success";
@@ -47,7 +54,14 @@ public class MemberCommuteController {
 		}
 		
 		int memberId = userDTO.getMember().getMemberId();
-		int result = commuteService.checkOut(memberId);
+		
+		MemberCommuteDTO commuteDTO = new MemberCommuteDTO();
+		
+		commuteDTO.setMemberId(memberId);
+		commuteDTO.setMemCommuteOutTime(LocalDateTime.now());
+		
+		
+		int result = commuteService.checkOut(commuteDTO);
 		
 		if(result > 0) {
 			return "success";

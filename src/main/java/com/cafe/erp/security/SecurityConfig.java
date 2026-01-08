@@ -8,17 +8,24 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.HttpSession;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig { 
+public class SecurityConfig {
+
     @Autowired 
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private MemberDetailsServiceImpl impl;
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
@@ -28,7 +35,6 @@ public class SecurityConfig {
         return authProvider;
     }
 
-
 	@Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
@@ -37,16 +43,15 @@ public class SecurityConfig {
     }
     
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, DaoAuthenticationProvider authProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         
         http
             .csrf(csrf -> csrf.disable())
-            .authenticationProvider(authProvider)
-            
+            .authenticationProvider(authenticationProvider(null))
             .authorizeHttpRequests(auth -> auth
             		.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                    .requestMatchers("/member/login", "login", "/error").permitAll()                    
-                    .anyRequest().authenticated()
+                    .requestMatchers("/member/login", "login", "/error", "/member/sessionCheck").permitAll()                    
+                    .anyRequest().authenticated() // 로그인 안 된 사용자 막기
             )
             .formLogin(login -> login
                     .loginPage("/member/login")
@@ -61,9 +66,24 @@ public class SecurityConfig {
             .logout(logout -> logout
                     .logoutUrl("/member/logout")
                     .logoutSuccessUrl("/member/login")
+                    	.addLogoutHandler((request, response, authentication) -> {
+                    		HttpSession session = request.getSession(false);
+                    		if(session != null) {
+                    			session.invalidate();
+                    		}
+                    	})
+                    	.logoutSuccessHandler((request, response, authentication) ->{
+                    		Cookie sessCookie = new Cookie("JSESSIONID", null);
+                    		sessCookie.setMaxAge(0);
+                    		sessCookie.setPath("/");
+                    		response.addCookie(sessCookie);
+                    		
+                    		response.sendRedirect("/member/login");
+                    	})
             )
             
             .sessionManagement(session -> session
+            		.invalidSessionUrl("/member/login")
                     .maximumSessions(1)
                     .maxSessionsPreventsLogin(false)
                     .expiredUrl("/member/login")
@@ -71,4 +91,10 @@ public class SecurityConfig {
 
         return http.build();
     }
+    
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+    	return new HttpSessionEventPublisher();
+    }
+
 }

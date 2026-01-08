@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +23,10 @@ import org.springframework.web.service.annotation.PatchExchange;
 
 import com.cafe.erp.member.commute.MemberCommuteDTO;
 import com.cafe.erp.member.commute.MemberCommuteService;
+import com.cafe.erp.security.UserDTO;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/member")
@@ -50,11 +56,12 @@ public class MemberController {
 	
 	
 	@GetMapping("AM_group_chat")
-	public String chatList(Model model)throws Exception{
-		
+	public String chatList(Model model, @AuthenticationPrincipal UserDTO userDTO)throws Exception{
+		int memberId = userDTO.getMember().getMemberId();
 		Map<String, Object> count = memberService.deptMemberCount();
-		
+		boolean pwPass = memberService.pwPass(memberId);
 		model.addAttribute("count", count);
+		model.addAttribute("pwPass", pwPass);
 		return "member/AM_group_chat";
 	}
 	
@@ -130,9 +137,13 @@ public class MemberController {
 	@PostMapping("member_info_update")
 	@ResponseBody
 	public String update(MemberDTO memberDTO, @RequestParam(value = "profileImage", required = false)MultipartFile file)throws Exception{
-		memberService.update(memberDTO, file);
-		int memid = memberDTO.getMemberId();
+		String newFileName = memberService.update(memberDTO, file);
 		
+		if(newFileName != null) {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			UserDTO userDTO = (UserDTO) authentication.getPrincipal();
+			userDTO.getMember().setMemProfileSavedName(newFileName);
+		}
 	    
 	    return "success";
 	}
@@ -163,6 +174,31 @@ public class MemberController {
 		return "success";
 	}
 	
+	
+	@PostMapping("changePassword")
+	@ResponseBody
+	public String changePassword(@Valid MemberChangePasswordDTO changePasswordDTO, BindingResult bindingResult, @AuthenticationPrincipal UserDTO userDTO) throws Exception{
+		
+		if(bindingResult.hasErrors()) {
+			return bindingResult.getFieldError().getDefaultMessage();
+		}
+		
+		changePasswordDTO.setMemberId(userDTO.getMember().getMemberId());
+		
+		int result = memberService.changePassword(userDTO.getMember().getMemberId(), changePasswordDTO);
+		
+		if(result == -1) {
+			return "현재 비밀번호가 일치하지 않습니다.";
+		} else if(result == 2) {
+			return "현재 비밀번호와 일치합니다.";
+		}
+		return result > 0 ? "success" : "fail";
+	}
+	
+	
+	
+	
+	
 	@PostMapping("InActive")
 	@ResponseBody
 	public String InActive(@RequestParam("memberId") int memberId) throws Exception{
@@ -173,6 +209,13 @@ public class MemberController {
 		
 		return "success";
 	}
+	
+	@GetMapping("sessionCheck")
+	@ResponseBody
+	public String sessionCheck() {
+		return "active";
+	}
+	
 	
 	
 	
@@ -186,5 +229,10 @@ public class MemberController {
 		return memberService.searchOwner(keyword);
 	}
 	
+	@GetMapping("/search/manager")
+	@ResponseBody
+	public List<MemberDTO> searchManager(@RequestParam String keyword) throws Exception {
+		return memberService.searchManager(keyword);
+	}
 	
 }

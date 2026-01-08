@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cafe.erp.files.FileUtils;
 
+import jakarta.validation.Valid;
+
 
 @Service
 public class MemberService {
@@ -30,6 +32,7 @@ public class MemberService {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
 
     MemberService(EmailService emailService) {
         this.emailService = emailService;
@@ -114,8 +117,8 @@ public class MemberService {
 
 
 	@Transactional
-	public void update(MemberDTO memberDTO, MultipartFile file) throws Exception {
-	    memberDAO.update(memberDTO); 
+	public String update(MemberDTO memberDTO, MultipartFile file) throws Exception {
+		String savedFileName = null;
 
 	    if(file != null && !file.isEmpty()) {
 	        int memberId = memberDTO.getMemberId();
@@ -125,15 +128,17 @@ public class MemberService {
 	            fileUtils.deleteFile(oldSavedName);
 	        }
 	        
-	        String savedName = fileUtils.uploadFile(file);
+	        savedFileName = fileUtils.uploadFile(file);
 	        String originalName = file.getOriginalFilename();
 	        
 	        if(memberDAO.checkProfileExist(memberId) > 0) {
-	            memberDAO.updateProfile(originalName, savedName, memberId);
+	            memberDAO.updateProfile(originalName, savedFileName, memberId);
 	        } else {
-	            memberDAO.insertProfile(originalName, savedName, memberId);
+	            memberDAO.insertProfile(originalName, savedFileName, memberId);
 	        }
 	    }
+	    memberDAO.update(memberDTO); 
+	    return savedFileName;
 	}
 
 	public int resetPw(MemberDTO memberDTO) throws Exception{
@@ -160,13 +165,32 @@ public class MemberService {
 	}
 
 
-
+	public int changePassword(int memberId, @Valid MemberChangePasswordDTO changePasswordDTO) throws Exception{
+		String db = memberDAO.getMemberPassword(memberId);
+		
+		if(!passwordEncoder.matches(changePasswordDTO.getNowPassword(), db)) {
+			return -1;
+		};
+		
+		if(passwordEncoder.matches(changePasswordDTO.getChangePassword(), db)) {
+			return 2;
+		}
+		
+		String newPassWordEn = passwordEncoder.encode(changePasswordDTO.getChangePassword());
+		changePasswordDTO.setChangePassword(newPassWordEn);
+		return memberDAO.changePassword(changePasswordDTO);
+	}
 	
 	
+	public Boolean pwPass(int memberId) throws Exception{
+		String db = memberDAO.getMemberPassword(memberId);
+		return passwordEncoder.matches("1234", db);
+	}
 	
 	
-	
-	
+	public List<MemberDTO> searchManager(String keyword) throws Exception {
+		return memberDAO.searchManager(keyword);
+	}
 	
 	
 

@@ -62,14 +62,14 @@
                     <img src="/fileDownload/profile?fileSavedName=default_img.jpg"
                         alt="user-avatar" 
                         class="d-block object-fit-cover rounded-circle"
-                        id="profileImage" 
+                        id="headerProfileImage" 
                         style="width: 32px; height: 32px; border: 1px solid #eee;">
                 </c:when>
                 <c:otherwise>
                     <img src="/fileDownload/profile?fileSavedName=${Info.memProfileSavedName}"
                         alt="user-avatar" 
                         class="d-block object-fit-cover rounded-circle"
-                        id="profileImage" 
+                        id="headerProfileImage" 
                         style="width: 32px; height: 32px; border: 1px solid #eee;">
                 </c:otherwise>
                 
@@ -95,3 +95,4 @@
 </nav>
 <script src="/vendor/libs/jquery/jquery.js"></script>
 <script type="text/javascript" src="/js/member/header.js"></script>
+
