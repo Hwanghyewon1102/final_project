@@ -39,7 +39,8 @@ public class VocController {
 	
 	@PostMapping("add")
 	@ResponseBody
-	public Map<String, Object> addVoc(@RequestBody VocDTO vocDTO) throws Exception { 
+	public Map<String, Object> addVoc(@RequestBody VocDTO vocDTO) throws Exception {
+		System.out.println("voc add 실행");
 		return result(vocService.add(vocDTO)); 
 	}
 	
