@@ -3,6 +3,7 @@ package com.cafe.erp.security.websocket;
 import org.springframework.messaging.*;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -36,10 +37,10 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             // 2️⃣ Principal → memberId로 세팅 (🔥 핵심)
             Object principal = authentication.getPrincipal();
 
-            if (principal instanceof UserDTO user) {
+            if (principal instanceof MemberDTO user) {
 
                 String memberId = String.valueOf(
-                        user.getMember().getMemberId()
+                        user.getMemberId()
                 );
 
                 accessor.setUser(() -> memberId);
