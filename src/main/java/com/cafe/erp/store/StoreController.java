@@ -125,7 +125,7 @@ public class StoreController {
 
 	@GetMapping("notFound")
 	public String notFound() {
-		return "store/not_found";
+		return "error/store_not_found";
 	}
 
 }
