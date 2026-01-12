@@ -104,7 +104,7 @@
 .order-left-body {
   flex: 1;
   overflow: visible !important; /* 🔥 핵심 */
-  padding: 0 1.5rem;
+  padding: 0 1.5rem 1.5rem;
 }
 
 /* ===============================
@@ -164,4 +164,40 @@
 
 .card-body {
 	flex: none;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+th, td {
+  white-space: normal;
+  word-break: break-word;
+  font-size: 0.875rem;
+}
+
+/* content-wrapper 높이 정상화 */
+.content-wrapper {
+  justify-content: flex-start !important;
+  min-height: auto !important;
+}
+
+/* 레이아웃 강제 min-height 제거 */
+.layout-page,
+.layout-content-navbar,
+.content-wrapper {
+  min-height: auto;
+}
+
+.card{
+	box-shadow: none;
+	border: 1px solid #d9dee3;
+}
+
+@media (min-width: 1200px) {
+  .layout-menu-fixed:not(.layout-menu-collapsed) .layout-page,
+  .layout-menu-fixed-offcanvas:not(.layout-menu-collapsed) .layout-page {
+    padding-left: 8.25rem;
+  }
 }

@@ -22,6 +22,7 @@ public class OrderDTO {
 	private Integer hqOrderTotalAmount;
 	
 	// 가맹
+	private Integer storeId;
 	private Integer storeOrderApprover;
 	private String storeRejectionReason; 
 	

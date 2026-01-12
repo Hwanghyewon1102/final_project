@@ -72,7 +72,7 @@
           <div class="content-wrapper">
             
             <!-- Content -->	
-            <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="container-fluid flex-grow-1 container-p-y">
               <div class="layout-wrapper layout-content-navbar">
 				  <div class="layout-container">
 				
@@ -84,7 +84,7 @@
 				          <div class="row g-3">
 				
 				            <!-- ================= 왼쪽: 발주 목록 ================= -->
-				            <div class="col-md-7">
+				            <div class="col-xl-7 col-lg-12">
 				              <div class="card h-100 d-flex flex-column">
 				
 				                <div class="card-header d-flex justify-content-between">
@@ -119,8 +119,8 @@
 				                    <table class="table table-bordered text-center align-middle mb-0">
 				                      <thead class="table-light">
 				                        <tr>
-				                          <th style="width:40px;">
-											<input type="checkbox" class="hqCheckAll"/>                          
+				                          <th class="chk-td">
+											<input type="checkbox" class="hqCheckAll" data-order-type="HQ"/>                          
 				                          </th>
 				                          <th>발주번호</th>
 				                          <th>금액</th>
@@ -130,8 +130,8 @@
 				                      </thead>
 				                      <tbody>
 				                        <c:forEach var="o" items="${orderHqList}">
-				                          <tr class="order-row" data-order-no="${o.hqOrderId}">
-				                            <td><input type="checkbox" class="order-check"/></td>
+				                          <tr class="order-row" data-order-no="${o.hqOrderId}" data-order-member="${member.memberId}" data-order-type="HQ">
+				                            <td class="chk-td"><input type="checkbox" class="order-check" /></td>
 				                            <td>${o.hqOrderId}</td>
 				                            <td class="text-end">
 				                              <fmt:formatNumber value="${o.hqOrderTotalAmount}"/>원
@@ -149,8 +149,8 @@
 				                    <table class="table table-bordered text-center align-middle mb-0">
 				                      <thead class="table-light">
 				                        <tr>
-				                          <th style="width:40px;">
-				                          	<input type="checkbox" class="hqCheckAll"/>
+				                          <th class="chk-td">
+				                          	<input type="checkbox" class="hqCheckAll" data-order-type="STORE"/>
 				                          </th>
 				                          <th>발주번호</th>
 				                          <th>금액</th>
@@ -161,8 +161,8 @@
 				                      </thead>
 				                      <tbody>
 				                        <c:forEach var="o" items="${orderStoreList}">
-				                          <tr class="order-row" data-order-no="${o.hqOrderId}">
-				                            <td><input type="checkbox" class="order-check"/></td>
+				                          <tr class="order-row" data-order-no="${o.hqOrderId}" data-order-type="STORE">
+				                            <td class="chk-td"><input type="checkbox" class="order-check"/></td>
 				                            <td>${o.hqOrderId}</td>
 				                            <td class="text-end">
 				                              <fmt:formatNumber value="${o.hqOrderTotalAmount}"/>원
@@ -181,7 +181,7 @@
 				            </div>
 				
 				            <!-- ================= 오른쪽 ================= -->
-				            <div class="col-md-5 order-right">
+				            <div class="col-xl-5 col-lg-12 order-right">
 				
 				              <!-- 승인 리스트 -->
 				              <div class="card approval-list">

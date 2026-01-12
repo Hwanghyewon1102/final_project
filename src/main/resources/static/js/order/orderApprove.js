@@ -1,6 +1,8 @@
 /* 상세페이지 불러오기 */
 $(document).on('click', '.order-row', function () {
   const orderNo = $(this).data('order-no');
+  const orderType = orderNo.charAt(0) == "P" ? "HQ" : "STORE"; 
+  console.log(orderType);
   console.log('orderNo =', orderNo); // ⭐ 이거 반드시 찍혀야 함
   const selectedOrderId = document.querySelector("#selectedOrderId");
   selectedOrderId.innerHTML = orderNo;
@@ -8,7 +10,7 @@ $(document).on('click', '.order-row', function () {
   $.ajax({
     url: '/order/detail',
     type: 'GET',
-    data: { orderNo: orderNo },
+    data: { orderNo: orderNo, orderType: orderType },
     success: function (html) {
 	  console.log('🔥 detail loaded');
       $('#orderDetailBody').html(html);
@@ -18,32 +20,6 @@ $(document).on('click', '.order-row', function () {
     }
   });
 });
-
-
-function approveAllFromApprovalList() {
-  const orderIds = [];
-
-  document.querySelectorAll("#approvalListBody tr[data-order-id]")
-    .forEach(tr => {
-      orderIds.push(tr.dataset.orderId);
-    });
-
-  if (orderIds.length === 0) {
-    alert("승인할 발주가 없습니다.");
-    return;
-  }
-
-  // 서버로 일괄 승인
-  fetch("/order/approve", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(orderIds)
-  }).then(() => {
-    alert("승인 완료");
-    location.reload();
-  });
-}
-
 
 $(document).ready(function () {
 
@@ -120,18 +96,21 @@ $(document).ready(function () {
   /* ===============================
      전체 선택 (Select All)
   ================================ */
-  $('.hqCheckAll').on('change', function () {
+  $(document).on('change', '.hqCheckAll', function () {
+
     const isChecked = $(this).is(':checked');
+    const orderType = $(this).data('order-type'); // HQ or STORE
 
-    $('.order-check').each(function () {
-      const $checkbox = $(this);
+    $(`.order-row[data-order-type="${orderType}"] .order-check`)
+      .each(function () {
+        const $checkbox = $(this);
 
-      // 이미 상태 같으면 skip
-      if ($checkbox.is(':checked') === isChecked) return;
+        if ($checkbox.is(':checked') === isChecked) return;
 
-      $checkbox.prop('checked', isChecked).trigger('change');
-    });
+        $checkbox.prop('checked', isChecked).trigger('change');
+      });
   });
+});
 
   /* ===============================
      개별 체크 해제 시 전체선택 해제
@@ -143,15 +122,16 @@ $(document).ready(function () {
     $('#hqCheckAll').prop('checked', total === checked);
   });
 
-});
 
 
 /* ===============================
    승인 버튼 클릭 html 수정
 ================================ */
 // 승인으로 html 처리
-function updateOrderStatusToApproved(orderNos) {
-  orderNos.forEach(orderNo => {
+function updateOrderStatusToApproved(orders) {
+  orders.forEach(order => {
+    const orderNo = order.orderNo;
+
     const $row = $(`.order-row[data-order-no="${orderNo}"]`);
     $row.find('.badge')
       .removeClass('bg-label-warning')
@@ -159,7 +139,6 @@ function updateOrderStatusToApproved(orderNos) {
       .text('승인');
   });
 }
-
 // 승인리스트 초기화
 function resetApprovalList() {
   $('#approvalListBody').html(`
@@ -191,7 +170,16 @@ $(document).on('click', '#approveBtn', function () {
 
   const orderNos = [];
   $approvalRows.each(function () {
-    orderNos.push($(this).data('order-no'));
+	const orderNo = $(this).data('order-no');
+	
+	// 🔥 상세페이지와 동일한 판별 로직
+	const orderType = orderNo.charAt(0) === "P" ? "HQ" : "STORE";
+	
+	orderNos.push({
+  	  orderNo: orderNo,
+  	  orderType: orderType
+	});
+	
   });
 
   if (!confirm('선택한 발주를 승인 처리하시겠습니까?')) {
@@ -220,3 +208,5 @@ $(document).on('click', '#approveBtn', function () {
     }
   });
 });
+
+
