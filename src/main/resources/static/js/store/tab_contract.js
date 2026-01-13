@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	const detailModal = document.getElementById('detailContractModal');
     if (detailModal) {
         detailModal.addEventListener('hidden.bs.modal', function () {
+            cancelEditMode();
+
             if (isContractUpdated) {
                 location.reload(); 
                 isContractUpdated = false;

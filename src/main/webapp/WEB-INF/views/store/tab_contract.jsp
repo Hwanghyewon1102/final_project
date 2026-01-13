@@ -90,9 +90,6 @@
                         <li class="nav-item">
                         	<a href="/store/contract/list" class="nav-link active"><i class="bx bx-file me-1"></i> 계약 기록</a>
                         </li>
-                        <li class="nav-item">
-                        	<a href="/store/evaluation" class="nav-link"><i class="bx bx-clipboard me-1"></i> 평가 현황</a>
-                        </li>
                     </ul>
                 </div>
                 <h4 class="fw-bold py-3 mb-3"><span class="text-muted fw-normal">가맹점 /</span> 계약 목록</h4>
@@ -183,7 +180,7 @@
 					          
 					        	<thead>
 					            	<tr>
-					              		<th width="5%">
+					              		<th width="8%">
 					              			계약번호
 					              		</th>
 					              		<th>
@@ -229,6 +226,7 @@
 								            </td>
 					                    </tr>
 					                </c:forEach>
+									<c:if test="${empty list}"><td colspan="7" class="text-center">해당 데이터가 없습니다.</td></c:if>
 					            </tbody>
 					        </table>
 					    </div>

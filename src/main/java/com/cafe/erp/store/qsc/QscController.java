@@ -1,13 +1,16 @@
 package com.cafe.erp.store.qsc;
 
+import com.cafe.erp.security.UserDTO;
 import com.cafe.erp.store.qsc.dto.QscDTO;
 import com.cafe.erp.store.qsc.dto.QscQuestionDTO;
 import com.cafe.erp.store.qsc.dto.QscQuestionSearchDTO;
 import com.cafe.erp.store.qsc.dto.QscSearchDTO;
+import com.cafe.erp.store.voc.VocDTO;
 import com.cafe.erp.util.ExcelUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,12 +28,29 @@ public class QscController {
     private QscService qscService;
 
     @GetMapping("list")
-    public String qscList(QscSearchDTO searchDTO, Model model) throws Exception {
-        List<QscDTO> qscList = qscService.qscList(searchDTO);
-        model.addAttribute("list", qscList);
-        model.addAttribute("pager", searchDTO);
+    public String qscList(QscSearchDTO searchDTO, Model model, Authentication authentication) throws Exception {
+        UserDTO user = (UserDTO) authentication.getPrincipal();
+        String memberId = user.getUsername();
 
-        return "qsc/list";
+        if (memberId.startsWith("2")) {
+            if (user.getStore() != null) {
+                searchDTO.setSearchStoreId(user.getStore().getStoreId());
+            } else {
+                searchDTO.setSearchStoreId(-1);
+            }
+
+            List<QscDTO> qscList = qscService.qscList(searchDTO);
+            model.addAttribute("list", qscList);
+            model.addAttribute("pager", searchDTO);
+
+            return "view_store/store/qsc_list";
+        } else {
+            List<QscDTO> qscList = qscService.qscList(searchDTO);
+            model.addAttribute("list", qscList);
+            model.addAttribute("pager", searchDTO);
+
+            return "qsc/list";
+        }
     }
 
     @GetMapping("add")
@@ -41,6 +61,60 @@ public class QscController {
         model.addAttribute("list", qscQuestionList);
 
         return "qsc/add";
+    }
+
+    @PostMapping("add")
+    @ResponseBody
+    public Map<String, Object> qscAdd(@RequestBody QscDTO qscDTO, Authentication authentication) throws Exception {
+        Integer memberId = Integer.parseInt(authentication.getName());
+        qscDTO.setMemberId(memberId);
+
+        return result(qscService.addQsc(qscDTO));
+    }
+
+    @GetMapping("detail")
+    public String qscDetail(Integer qscId, Model model) throws Exception {
+        QscDTO qscDTO = qscService.qscDetail(qscId);
+        model.addAttribute("dto", qscDTO);
+
+        return "qsc/detail";
+    }
+
+    @GetMapping("edit")
+    public String qscEdit(Integer qscId, Model model, Authentication authentication) throws Exception {
+        QscDTO qscDTO = qscService.qscDetail(qscId);
+        if (! authentication.getName().equals(qscDTO.getMemberId().toString())) return "error/forbidden";
+
+        model.addAttribute("dto", qscDTO);
+
+        return "qsc/edit";
+    }
+
+    @PostMapping("update")
+    @ResponseBody
+    public Map<String, Object> qscUpdate(@RequestBody QscDTO qscDTO) throws Exception {
+        return result(qscService.updateQsc(qscDTO));
+    }
+
+    @GetMapping("/downloadExcel")
+    public void downloadExcel(QscSearchDTO searchDTO, HttpServletResponse response) throws Exception {
+        List<QscDTO> list = qscService.excelList(searchDTO);
+        String[] headers = {"ID", "가맹점명", "점주명", "가맹점주소", "점검담당자명", "제목", "점검일시", "만점", "총점", "환산점수", "등급", "종합의견"};
+
+        ExcelUtil.download(list, headers, "QSC 목록", response, (row, dto) -> {
+            row.createCell(0).setCellValue(dto.getQscId());
+            row.createCell(1).setCellValue(dto.getStoreName());
+            row.createCell(2).setCellValue(dto.getOwnerName());
+            row.createCell(3).setCellValue(dto.getStoreAddress());
+            row.createCell(4).setCellValue(dto.getMemName());
+            row.createCell(5).setCellValue(dto.getQscTitle());
+            row.createCell(6).setCellValue(dto.getQscDateStr());
+            row.createCell(7).setCellValue(dto.getQscQuestionTotalScore());
+            row.createCell(8).setCellValue(dto.getQscTotalScore());
+            row.createCell(9).setCellValue(dto.getQscScore());
+            row.createCell(10).setCellValue(dto.getQscGrade());
+            row.createCell(11).setCellValue(dto.getQscOpinion());
+        });
     }
 
     @GetMapping("admin/question")
@@ -57,8 +131,14 @@ public class QscController {
 
     @PostMapping("admin/question/add")
     @ResponseBody
-    Map<String, Object> addQuestion(@RequestBody QscQuestionDTO questionDTO) throws Exception {
+    public Map<String, Object> addQuestion(@RequestBody QscQuestionDTO questionDTO) throws Exception {
         return result(qscService.addQuestion(questionDTO));
+    }
+
+    @PostMapping("admin/question/update")
+    @ResponseBody
+    public Map<String, Object> updateQuestion(@RequestBody QscQuestionDTO questionDTO) throws Exception {
+        return result(qscService.updateQuestion(questionDTO));
     }
 
     @GetMapping("question/downloadExcel")

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <html
   lang="en"
@@ -78,33 +79,24 @@
 
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">
-                <h4 class="fw-bold py-3 mb-3"><span class="text-muted fw-normal">QSC /</span> 등록</h4>
+                <h4 class="fw-bold py-3 mb-3"><a href="/store/qsc/list" class="text-muted fw-normal">QSC /</a> 상세</h4>
                 <div id="tab-content-area">
 					<div class="card shadow-none border bg-white">
-                        <form method="post" id="qscForm" action="/store/qsc/add" onsubmit="return false;">
+                        <form method="post" id="qscUpdateForm" onsubmit="return false;">
+                            <input type="hidden" id="qscId" value="${dto.qscId}">
+
                             <div class="row g-3 p-4">
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small">제목</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-detail'></i></span>
-                                        <input type="text" class="form-control" placeholder="제목" id="qscTitle" name="qscTitle"/>
+                                <div class="col-12 text-center mb-4" style="margin-top: 50px">
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        <h3 class="fw-bold mb-0">[</h3>
+                                        <input type="text" id="qscTitle" class="form-control fw-bold text-center"
+                                               value="${dto.qscTitle}" style="width: 50%; font-size: 1.5rem;">
+                                        <h3 class="fw-bold mb-0">]</h3>
                                     </div>
                                 </div>
-
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label" for="storeNameInput">가맹점명 검색 <span class="text-danger">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bx bx-store"></i></span>
-                                        <input type="text" id="storeNameInput" class="form-control" placeholder="가맹점명 입력" onkeyup="if(window.event.keyCode==13){searchStore()}" required />
-                                        <input type="hidden" id="storeId" name="storeId" />
-                                        <button class="btn btn-primary" type="button" onclick="searchStore()">
-                                            <i class="bx bx-search"></i>
-                                        </button>
-                                    </div>
-
-                                    <ul id="storeResultList" class="list-group position-absolute overflow-auto"
-                                        style="max-height: 200px; width: 40%; z-index: 1050; display: none; margin-top: 5px; box-shadow: 0 0.25rem 1rem rgba(0,0,0,0.15); background-color: rgba(255, 255, 255, 0.9);">
-                                    </ul>
+                                <div class="col-12 text-end">
+                                    <h6 class="mb-1 text-muted">담당자 : <span class="text-dark fw-bold">${dto.memName}</span></h6>
+                                    <h6 class="mb-4 text-muted">가맹점명 : <span class="text-dark fw-bold" id="storeNameInput">${dto.storeName}</span></h6>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -120,30 +112,39 @@
                                     </thead>
 
                                     <tbody>
-                                        <c:forEach items="${list}" var="dto" varStatus="status">
-                                            <c:set var="totalMax" value="${totalMax + dto.listMaxScore}" />
+                                        <c:forEach items="${dto.qscDetailDTOS}" var="detail" varStatus="status">
                                             <tr>
                                                 <td class="text-primary">${status.count}</td>
-                                                <td>${dto.listCategory}</td>
-                                                <td>${dto.listQuestion}</td>
-                                                <td>${dto.listMaxScore}</td>
+                                                <td>${detail.questionDTO.listCategory}</td>
+                                                <td>${detail.questionDTO.listQuestion}</td>
+                                                <td>${detail.questionDTO.listMaxScore}</td>
                                                 <td>
-                                                    <input type="text" class="form-control score-input" id="detailScore" name="detailScore"
-                                                           data-list-id="${dto.listId}" data-max-score="${dto.listMaxScore}" oninput="handleMaxScore(this); calculateTotal();"
-                                                           style="line-height: 1;" >
+                                                    <input type="text"
+                                                           class="form-control form-control-sm score-input text-center"
+                                                           value="${detail.detailScore}"
+                                                           data-detail-id="${detail.detailId}"
+                                                           data-max-score="${detail.questionDTO.listMaxScore}"
+                                                           oninput="handleMaxScore(this); calculateTotal();">
                                                 </td>
                                             </tr>
                                         </c:forEach>
                                         <tr class="fw-bold">
                                             <td class="text-primary" colspan="3">총점</td>
-                                            <td>${totalMax}</td>
-                                            <td><span id="displayTotalScore" class="text-primary">0</span></td>
+                                            <td>${dto.qscQuestionTotalScore}</td>
+                                            <td><span id="displayTotalScore" class="text-primary">${dto.qscTotalScore}</span></td>
                                         </tr>
                                         <tr class="fw-bold">
-                                            <input type="hidden" id="hiddenTotalMax" value="${totalMax}">
-                                            <td class="text-primary" colspan="3">예상 등급</td>
-                                            <td><span id="displayGrade"></span></td>
-                                            <td><span id="displayTotalScoreTo" class="text-primary">0</span></td>
+                                            <input type="hidden" id="hiddenTotalMax" value="${dto.qscQuestionTotalScore}">
+                                            <td class="text-primary" colspan="3">등급</td>
+                                            <td>
+                                                <c:set var="initBadge" value="bg-label-danger"/>
+                                                <c:if test="${dto.qscGrade eq 'A'}"> <c:set var="initBadge" value="bg-label-primary"/> </c:if>
+                                                <c:if test="${dto.qscGrade eq 'B'}"> <c:set var="initBadge" value="bg-label-success"/> </c:if>
+                                                <c:if test="${dto.qscGrade eq 'C'}"> <c:set var="initBadge" value="bg-label-warning"/> </c:if>
+
+                                                <span id="displayGrade" class="badge ${initBadge}">${dto.qscGrade}</span>
+                                            </td>
+                                            <td><span id="displayTotalScoreTo" class="text-primary">${dto.qscScore}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -152,13 +153,17 @@
                                 <div class="col-md-12">
                                     <label class="form-label" for="qscOpinion">종합 의견</label>
                                     <div class="input-group">
-                                        <textarea class="form-control" rows="3" id="qscOpinion"></textarea>
+                                        <textarea class="form-control" rows="3" id="qscOpinion">${dto.qscOpinion}</textarea>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end gap-2 p-4">
-                                <a href="/store/qsc/list" class="btn btn-outline-secondary" onclick="return confirm('현재 작성된 내용은 저장되지 않습니다.\n정말 목록으로 돌아가시겠습니까?');">취소</a>
-                                <button type="button" class="btn btn-primary" onclick="submitQscForm()">저장</button>
+                                <button type="button"
+                                        class="btn btn-outline-secondary"
+                                        onclick="if(confirm('현재 작성된 내용은 저장되지 않습니다.\n정말 목록으로 돌아가시겠습니까?')) history.back();">
+                                    취소
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="submitQscUpdateForm()">저장</button>
                             </div>
                         </form>
 					</div>

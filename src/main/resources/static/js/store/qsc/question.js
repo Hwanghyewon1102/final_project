@@ -30,6 +30,11 @@ async function submitQuestionRegistration() {
         document.getElementById('listQuestion').focus();
         return;
     }
+    if (!listMaxScore) {
+        alert("배점을 입력해주세요.");
+        document.getElementById('listMaxScore').focus();
+        return;
+    }
 
     const formData = {
         listCategory: listCategory,
@@ -101,3 +106,77 @@ function downloadExcel() {
 	var searchParams = $('#questionSearchForm').serialize();
 	location.href='/store/qsc/question/downloadExcel?' + searchParams;
 }
+
+function openUpdateModal(button) {
+    const listId = button.dataset.id;
+    const category = button.dataset.category;
+    const question = button.dataset.question;
+    const score = button.dataset.score;
+    const status = button.dataset.status;
+
+    document.getElementById('updateListId').value = listId;
+    document.getElementById('updateListCategory').innerHTML = category;
+    document.getElementById('updateListQuestion').innerHTML = question;
+    document.getElementById('updateListMaxScore').innerHTML = score;
+    document.getElementById('listStatus').value = status;
+
+    if (category == 'Quality') document.getElementById('updateListCategory').classList.add('bg-label-primary');
+    else if (category == 'Service') document.getElementById('updateListCategory').classList.add('bg-label-warning');
+    else if (category == 'Cleanliness') document.getElementById('updateListCategory').classList.add('bg-label-info');
+
+    const modalElement = document.getElementById('updateQuestionModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
+
+async function submitQuestionUpdate() {
+    const listId = document.getElementById('updateListId').value;
+    const listStatus = document.getElementById('listStatus').value;
+
+    const formData = {
+        listId: listId,
+        listIsUse: listStatus
+    };
+
+    try {
+        const response = await fetch('/store/qsc/admin/question/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+				},
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            throw new Error(`서버 오류: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        alert("질문이 성공적으로 수정되었습니다.");
+
+        const modalEl = document.getElementById('updateQuestionModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+
+        location.reload();
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert("수정 중 오류가 발생했습니다.");
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const questionModalEl = document.getElementById('registerQuestionModal');
+
+    if (questionModalEl) {
+        questionModalEl.addEventListener('hidden.bs.modal', function () {
+            document.getElementById('listCategory').selectedIndex = 0;
+            document.getElementById('listMaxScore').value = '';
+            document.getElementById('listQuestion').value = '';
+        });
+    }
+});

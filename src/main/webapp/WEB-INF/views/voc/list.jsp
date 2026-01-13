@@ -211,6 +211,7 @@
 								            <td>${dto.vocCreatedAtStr}</td>
 					                    </tr>
 					                </c:forEach>
+									<c:if test="${empty list}"><td colspan="7" class="text-center">해당 데이터가 없습니다.</td></c:if>
 					            </tbody>
 					        </table>
 					    </div>
