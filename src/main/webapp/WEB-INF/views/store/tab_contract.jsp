@@ -180,7 +180,7 @@
 					          
 					        	<thead>
 					            	<tr>
-					              		<th width="5%">
+					              		<th width="8%">
 					              			계약번호
 					              		</th>
 					              		<th>
@@ -226,6 +226,7 @@
 								            </td>
 					                    </tr>
 					                </c:forEach>
+									<c:if test="${empty list}"><td colspan="7" class="text-center">해당 데이터가 없습니다.</td></c:if>
 					            </tbody>
 					        </table>
 					    </div>

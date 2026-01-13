@@ -18,7 +18,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>VOC 관리</title>
+    <title>QSC 리스트</title>
 
     <meta name="description" content="" />
 
@@ -52,7 +52,7 @@
     <link rel="stylesheet" href="/css/store/main.css">
 
     <!-- Page CSS -->
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <!-- Helpers -->
     <script src="/vendor/js/helpers.js"></script>
@@ -60,7 +60,6 @@
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="/js/config.js"></script>
-    
   </head>
 
   <body>
@@ -81,83 +80,77 @@
 
             <div class="container-xxl flex-grow-1 container-p-y">
               <div class="row">
-
 				  <sec:authentication property="principal.store" var="storeInfo"/>
-			    <div class="col-12 px-0">
-                    <ul class="nav nav-pills mb-3" role="tablist">
-						<c:if test="${not empty storeInfo}">
-							<li class="nav-item">
-								<a href="/store/detail?storeId=${storeInfo.storeId}" class="nav-link active">
-									<i class="bx bx-store me-1"></i> 기본 정보
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="/store/voc/list?searchStoreId=${storeInfo.storeId}" class="nav-link active"><i class="bx bx-support me-1"></i> VOC</a>
-							</li>
-							<li class="nav-item">
-								<a href="/store/qsc/list" class="nav-link active"><i class="bx bx-task me-1"></i> QSC</a>
-							</li>
-							<li class="nav-item">
-								<a href="/store/contract/list?searchStoreId=${storeInfo.storeId}" class="nav-link"><i class="bx bx-file me-1"></i> 계약 기록</a>
-							</li>
-						</c:if>
-                    </ul>
-                </div>
+				  <div class="col-12 px-0">
+					  <ul class="nav nav-pills mb-3" role="tablist">
+						  <c:if test="${not empty storeInfo}">
+							  <li class="nav-item">
+								  <a href="/store/detail?storeId=${storeInfo.storeId}" class="nav-link active">
+									  <i class="bx bx-store me-1"></i> 기본 정보
+								  </a>
+							  </li>
+							  <li class="nav-item">
+								  <a href="/store/voc/list?searchStoreId=${storeInfo.storeId}" class="nav-link active"><i class="bx bx-support me-1"></i> VOC</a>
+							  </li>
+							  <li class="nav-item">
+								  <a href="/store/qsc/list" class="nav-link active"><i class="bx bx-task me-1"></i> QSC</a>
+							  </li>
+							  <li class="nav-item">
+								  <a href="/store/contract/list?searchStoreId=${storeInfo.storeId}" class="nav-link"><i class="bx bx-file me-1"></i> 계약 기록</a>
+							  </li>
+						  </c:if>
+					  </ul>
+				  </div>
                 <div id="tab-content-area">
                    	<div class="card shadow-none border bg-white mb-4">
 						<div class="card-body py-3 px-3">
-							<form id="vocSearchForm" method="get" action="/store/voc/list">
-							    <input type="hidden" name="page" id="page" value="1">
-							    
-							    <div class="row g-3">
-							        <div class="col-12 col-lg-2">
-							            <label class="form-label small">불만 유형</label>
-							            <select class="form-select" id="searchVocType" name="searchVocType">
-							                <option value="">전체</option>
-							                <option value="HYGIENE" ${pager.searchVocType eq 'HYGIENE' ? 'selected' : ''}>위생</option>
-							                <option value="TASTE" ${pager.searchVocType eq 'TASTE' ? 'selected' : ''}>맛</option>
-							                <option value="SERVICE" ${pager.searchVocType eq 'SERVICE' ? 'selected' : ''}>서비스</option>
-							            </select>
-							        </div>
-							
-							        <div class="col-12 col-lg-2">
-							            <label class="form-label small">처리 상태</label>
-							            <select class="form-select" id="searchVocStatus" name="searchVocStatus">
-							                <option value="">전체</option>
-							                <option value="0" ${pager.searchVocStatus eq 0 ? 'selected' : ''}>처리 대기</option>
-							                <option value="1" ${pager.searchVocStatus eq 1 ? 'selected' : ''}>처리 중</option>
-							                <option value="2" ${pager.searchVocStatus eq 2 ? 'selected' : ''}>처리 완료</option>
-							            </select>
-							        </div>
-							
-							        <div class="col-12 col-lg-4">
-									    <label class="form-label small">접수 기간</label>
-									    <div class="input-group">
-									        <span class="input-group-text"><i class="bx bx-calendar"></i></span>
-									        <input type="text" class="form-control" id="daterange" placeholder="기간을 선택하세요" />
-									    </div>
-									    
-									    <input type="hidden" id="searchStartDate" name="searchStartDate" value="${pager.searchStartDate}" />
-									    <input type="hidden" id="searchEndDate" name="searchEndDate" value="${pager.searchEndDate}" />
+					    	<form id="qscSearchForm" method="get" action="/store/qsc/list">
+					    		<input type="hidden" name="page" id="page" value="1">
+					      		<div class="row g-3">
+					        		<div class="col-12 col-md-6 col-lg-2">
+					          			<label class="form-label small">평가등급</label>
+								        	<select class="form-select" id="searchQscGrade" name="searchQscGrade">
+								            	<option value="">전체</option>
+								                <option value="A" ${pager.searchQscGrade == 'A' ? 'selected' : ''}>A</option>
+								                <option value="B" ${pager.searchQscGrade == 'B' ? 'selected' : ''}>B</option>
+								                <option value="C" ${pager.searchQscGrade == 'C' ? 'selected' : ''}>C</option>
+												<option value="D" ${pager.searchQscGrade == 'D' ? 'selected' : ''}>D</option>
+								            </select>
+					        		</div>
+
+									<div class="col-12 col-md-6 col-lg-3">
+										<label class="form-label small">점검 기간</label>
+										<div class="input-group">
+											<span class="input-group-text"><i class="bx bx-calendar"></i></span>
+											<input type="text" class="form-control" id="daterange" placeholder="기간을 선택하세요" />
+										</div>
+
+										<input type="hidden" id="searchStartDate" name="searchStartDate" value="${pager.searchStartDate}" />
+										<input type="hidden" id="searchEndDate" name="searchEndDate" value="${pager.searchEndDate}" />
 									</div>
-							
-							        <div class="col-12 col-lg-4">
-							            <label class="form-label small">제목</label>
-							            <div class="input-group">
-							            	<span class="input-group-text"><i class='bx bx-detail'></i></span>
-								            <input type="text" class="form-control" placeholder="제목 검색" id="searchVocTitle" name="searchVocTitle" value="${pager.searchVocTitle}" />
-							            </div>
-							        </div>
-							
-							        <div class="col-12 d-flex align-items-end justify-content-end gap-2">
-							            <button class="btn btn-outline-secondary text-nowrap" type="button" onclick="resetSearchForm()"> 
-							                <i class="bx bx-refresh"></i> 초기화
+									<div class="col-12 col-md-6 col-lg-3">
+										<label class="form-label small">담당자명</label>
+										<div class="input-group">
+											<span class="input-group-text"><i class="bx bx-user"></i></span>
+											<input type="text" class="form-control" placeholder="담당자명" id="searchMemname" name="searchMemname" value="${pager.searchMemname}" />
+										</div>
+									</div>
+									<div class="col-12 col-md-6 col-lg-4">
+										<label class="form-label small">제목</label>
+										<div class="input-group">
+											<span class="input-group-text"><i class='bx bx-detail'></i></span>
+											<input type="text" class="form-control" placeholder="제목" id="searchQscTitle" name="searchQscTitle" value="${pager.searchQscTitle}" />
+										</div>
+									</div>
+
+
+							        <div class="col-12 d-flex align-items-end justify-content-end gap-2 mt-4">
+										<button class="btn btn-outline-secondary text-nowrap" type="button" onclick="resetSearchForm()"><i class="bx bx-refresh"></i> 초기화</button>
+							            <button class="btn btn-primary text-nowrap" onclick="searchQsc()">
+							            	<i class="bx bx-search me-1"></i> 조회
 							            </button>
-							            <button class="btn btn-primary text-nowrap" type="button" onclick="searchVoc()">
-							                <i class="bx bx-search me-1"></i> 조회
-							            </button>
 							        </div>
-							    </div>
+					           	</div>
 							</form>
 						</div>
 					</div>
@@ -165,7 +158,7 @@
 					<div class="card shadow-none border bg-white">
 					     	
 						<div class="card-header d-flex justify-content-between align-items-center">
-					    	<h5 class="mb-0">VOC 목록</h5>
+					    	<h5 class="mb-0">QSC 목록</h5>
 					        <div>
 					       		<button type="button" class="btn btn-outline-success me-2" onclick="downloadExcel()">
 					            	<i class='bx bx-download me-1'></i> 엑셀 다운로드
@@ -179,36 +172,28 @@
 					        	<thead>
 					            	<tr>
 					              		<th width="5%">ID</th>
+					              		<th>담당자</th>
 					              		<th>가맹점명</th>
-						                <th>유형</th>
-					              		<th>제목</th>
-						              	<th>작성자</th>
-						              	<th>진행상태</th>
-						              	<th>접수일시</th>
+						                <th>제목</th>
+						              	<th>등급</th>
+										<th>날짜</th>
 						            </tr>
 					          	</thead>
 					            
 					          	<tbody>
 					            	<c:forEach items="${list}" var="dto">
 					       				<tr>
-					         				<td class="fw-bold">${dto.vocId}</td>
+					         				<td class="fw-bold">${dto.qscId}</td>
+											<td>${dto.memName}</td>
+											<td>${dto.storeName}</td>
+											<td><a href="/store/qsc/detail?qscId=${dto.qscId}" class="text-primary">${dto.qscTitle}</a></td>
 								            <td>
-												<a href="/store/voc/detail?vocId=${dto.vocId}"
-								            	   class="fw-bold text-primary">${dto.storeName}</a>
+												<c:if test="${dto.qscGrade eq 'A'}"><span class="badge bg-label-primary">A</span></c:if>
+												<c:if test="${dto.qscGrade eq 'B'}"><span class="badge bg-label-success">B</span></c:if>
+												<c:if test="${dto.qscGrade eq 'C'}"><span class="badge bg-label-warning">C</span></c:if>
+												<c:if test="${dto.qscGrade eq 'D'}"><span class="badge bg-label-danger">D</span></c:if>
 											</td>
-								            <td>
-								            	<c:if test="${dto.vocType eq 'HYGIENE'}"><span class="badge bg-label-primary">위생</span></c:if>
-								            	<c:if test="${dto.vocType eq 'SERVICE'}"><span class="badge bg-label-secondary">서비스</span></c:if>
-								            	<c:if test="${dto.vocType eq 'TASTE'}"><span class="badge bg-label-danger">맛</span></c:if>
-								            </td>
-								            <td>${dto.vocTitle}</td>
-								            <td>${dto.memName}</td>
-								            <td>
-								            	<c:if test="${dto.vocStatus eq 0}"><span class="badge bg-label-warning">${dto.vocStatusStr}</span></c:if>
-								            	<c:if test="${dto.vocStatus eq 1}"><span class="badge bg-label-info">${dto.vocStatusStr}</span></c:if>
-								            	<c:if test="${dto.vocStatus eq 2}"><span class="badge bg-label-success">${dto.vocStatusStr}</span></c:if>
-								            </td>
-								            <td>${dto.vocCreatedAtStr}</td>
+								            <td>${dto.qscDateStr}</td>
 					                    </tr>
 					                </c:forEach>
 					            </tbody>
@@ -230,7 +215,7 @@
                 </div>
 			  	
 	          </div>
-	          
+
             </div>
             <!-- / Content -->
 
@@ -254,17 +239,11 @@
 	    const currentPath = window.location.pathname;
 	
 	    document.querySelectorAll('.nav-pills .nav-link').forEach(link => {
-			const linkHref = link.getAttribute('href');
-
-			if (!linkHref || linkHref === '#') return;
-
-			const pureLinkPath = linkHref.split('?')[0];
-
-			if (pureLinkPath === currentPath) {
-				link.classList.add('active');
-			} else {
-				link.classList.remove('active');
-			}
+	        if (link.getAttribute('href') === currentPath) {
+	            link.classList.add('active');
+	        } else {
+	            link.classList.remove('active');
+	        }
 	    });
 	</script>
     
@@ -281,11 +260,8 @@
 
     <!-- Vendors JS -->
     <script src="/vendor/libs/apex-charts/apexcharts.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    
+	<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
     <!-- Main JS -->
     <script src="/js/main.js"></script>
@@ -296,8 +272,10 @@
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-    <script type="text/javascript" src="/js/store/voc/voc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
     
-    
+    <script type="text/javascript" src="/js/store/qsc/list.js"></script>
   </body>
 </html>

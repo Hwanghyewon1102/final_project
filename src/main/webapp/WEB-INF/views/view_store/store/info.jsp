@@ -95,10 +95,13 @@
 								</a>
 							</li>
 							<li class="nav-item">
-								<a href="/store/contract/list?searchStoreId=${storeInfo.storeId}" class="nav-link"><i class="bx bx-file me-1"></i> 계약 기록</a>
+								<a href="/store/voc/list?searchStoreId=${storeInfo.storeId}" class="nav-link active"><i class="bx bx-support me-1"></i> VOC</a>
 							</li>
 							<li class="nav-item">
-								<a href="/store/voc/list?searchStoreId=${storeInfo.storeId}" class="nav-link active"><i class="bx bx-support me-1"></i> VOC</a>
+								<a href="/store/qsc/list" class="nav-link active"><i class="bx bx-task me-1"></i> QSC</a>
+							</li>
+							<li class="nav-item">
+								<a href="/store/contract/list?searchStoreId=${storeInfo.storeId}" class="nav-link"><i class="bx bx-file me-1"></i> 계약 기록</a>
 							</li>
 						</c:if>
                     </ul>

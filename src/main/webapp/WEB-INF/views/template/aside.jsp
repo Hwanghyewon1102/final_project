@@ -172,13 +172,8 @@
           </a>
         </li>
         <li class="menu-item">
-          <a href="javascript:void(0);" class="menu-link">
-            <div data-i18n="Under Maintenance">Receive</div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="/order/release" class="menu-link">
-            <div data-i18n="Under Maintenance">Release</div>
+          <a href="/store/qsc/list" class="menu-link">
+            <div data-i18n="Under Maintenance">QSC</div>
           </a>
         </li>
       </ul>
