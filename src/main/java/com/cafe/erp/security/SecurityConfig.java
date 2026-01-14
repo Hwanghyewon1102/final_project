@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -18,17 +19,14 @@ import jakarta.servlet.http.HttpSession;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired 
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private MemberDetailsServiceImpl impl;
-
-    @Autowired
     private LoginSuccessHandler loginSuccessHandler;
-
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder) {
@@ -53,7 +51,7 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider(passwordEncoder))
             .authorizeHttpRequests(auth -> auth
             		.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                    .requestMatchers("/member/login", "login", "/error", "/member/sessionCheck").permitAll()                    
+                    .requestMatchers("/member/login", "/login", "/error", "/member/sessionCheck").permitAll()
                     .anyRequest().authenticated() // 로그인 안 된 사용자 막기
             )
             .formLogin(login -> login
@@ -64,26 +62,13 @@ public class SecurityConfig {
                     .successHandler(loginSuccessHandler)
                     .permitAll()
             )
-            
             .logout(logout -> logout
                     .logoutUrl("/member/logout")
                     .logoutSuccessUrl("/member/login")
-                    	.addLogoutHandler((request, response, authentication) -> {
-                    		HttpSession session = request.getSession(false);
-                    		if(session != null) {
-                    			session.invalidate();
-                    		}
-                    	})
-                    	.logoutSuccessHandler((request, response, authentication) ->{
-                    		Cookie sessCookie = new Cookie("JSESSIONID", null);
-                    		sessCookie.setMaxAge(0);
-                    		sessCookie.setPath("/");
-                    		response.addCookie(sessCookie);
-                    		
-                    		response.sendRedirect("/member/login");
-                    	})
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                    .permitAll()
             )
-            
             .sessionManagement(session -> session
             		.invalidSessionUrl("/member/login")
                     .maximumSessions(1)

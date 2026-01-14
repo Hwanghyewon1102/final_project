@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <%@taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <html
   lang="en"
@@ -61,6 +62,7 @@
   </head>
 
   <body>
+  	<sec:authentication property="principal.member" var="memberInfo"/>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
@@ -146,9 +148,12 @@
 					       		<button type="button" class="btn btn-outline-success me-2" onclick="downloadExcel()">
 					            	<i class='bx bx-download me-1'></i> 엑셀 다운로드
 					            </button>
-					          	<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerQuestionModal">
-					                <i class="bx bx-plus me-1"></i> 질문 등록
-					          	</button>
+								<!-- 영업팀 or Admin 권한 -->
+								<c:if test="${memberInfo.deptCode eq 13 or memberInfo.deptCode eq 99}">
+									<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerQuestionModal">
+										<i class="bx bx-plus me-1"></i> 질문 등록
+									</button>
+								</c:if>
 					     	</div>
 						</div>
 					  
