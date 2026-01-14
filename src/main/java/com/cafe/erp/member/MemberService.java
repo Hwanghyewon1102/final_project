@@ -189,6 +189,18 @@ public class MemberService {
 
 	public void lockAccount(int memberId) throws Exception {}
 
+	public List<MemberDTO> deptList() throws Exception{
+		return memberDAO.deptList();
+	}
+
+	public List<MemberDTO> positionList() {
+		return memberDAO.positionList();
+	}
+
+	
+
+
+
 	
 	
 

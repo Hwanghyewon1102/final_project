@@ -113,8 +113,21 @@ public class MemberController {
 			String state = dto.getMemCommuteState();
 			if(dto.getMemCommuteWorkDate() != null) {
 				Map<String, Object> checkIn = new HashMap<>();
-				String checkInDate = dto.getMemCommuteInTime().toString();
-				String checkInTime = checkInDate.substring(11, 16);
+				String checkInDate = "";
+				if (dto.getMemCommuteInTime() != null) {
+					checkInDate = dto.getMemCommuteInTime().toString();
+				}
+				
+				String checkInTime = ""; 
+
+				if (dto.getMemCommuteInTime() != null) {
+				    String fullTime = dto.getMemCommuteInTime().toString();
+				    if (fullTime.length() >= 16) {
+				    	checkInTime = fullTime.substring(11, 16); 
+				    } else {
+				    	checkInTime = fullTime;
+				    }
+				}
 				
 				if ("지각".equals(state) || checkInTime.compareTo("09:00") > 0) {
 		            checkIn.put("title", "지각 (" + checkInTime + ")");    
@@ -129,8 +142,21 @@ public class MemberController {
 			
 			if (dto.getMemCommuteOutTime() != null) {
                 Map<String, Object> checkout = new HashMap<>();
-                String checkOutDate = dto.getMemCommuteOutTime().toString();
-                String checkOutTime = checkOutDate.substring(11, 16);
+                String checkOutDate = "";
+				if (dto.getMemCommuteOutTime() != null) {
+					checkOutDate = dto.getMemCommuteOutTime().toString();
+				}
+				
+				String checkOutTime = ""; 
+
+				if (dto.getMemCommuteOutTime() != null) {
+				    String fullTime = dto.getMemCommuteOutTime().toString();
+				    if (fullTime.length() >= 16) {
+				    	checkOutTime = fullTime.substring(11, 16); 
+				    } else {
+				    	checkOutTime = fullTime;
+				    }
+				}
                 
                 
                 if("조퇴".equals(state)) {
@@ -260,6 +286,12 @@ public class MemberController {
 
 	    MemberDTO member = memberService.detail(memberDTO);
 	    model.addAttribute("dto", member);
+	    
+	    List<MemberDTO> deptList = memberService.deptList();
+	    model.addAttribute("deptList", deptList);
+
+	    List<MemberDTO> positionList = memberService.positionList();
+	    model.addAttribute("positionList", positionList);
 
 	    if (member != null) {
 	        MemberCommuteDTO commuteDTO = new MemberCommuteDTO();

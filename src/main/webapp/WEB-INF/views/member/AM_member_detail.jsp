@@ -164,23 +164,11 @@
 									                            <span class="avatar-initial rounded-circle bg-label-primary"><i class='bx bx-buildings fs-4'></i></span>
 									                        </div>
 									                        <div>
-									                            <small class="text-muted d-block mb-1">소속 부서</small>
-									                            <h6 class="mb-0 fw-bold text-dark" id="txt-dept-name">
-									                                <c:choose>
-									                                    <c:when test="${dto.deptCode == 10}">인사팀</c:when>
-									                                    <c:when test="${dto.deptCode == 11}">회계팀</c:when>
-									                                    <c:when test="${dto.deptCode == 12}">재무팀</c:when>
-									                                    <c:when test="${dto.deptCode == 13}">영업팀</c:when>
-									                                    <c:when test="${dto.deptCode == 14}">CS팀</c:when>
-									                                    <c:when test="${dto.deptCode == 15}">마케팅팀</c:when>
-									                                    <c:when test="${dto.deptCode == 16}">개발팀</c:when>
-									                                    <c:when test="${dto.deptCode == 17}">가맹점</c:when>
-									                                    <c:when test="${dto.deptCode == 20}">임원</c:when>
-									                                    <c:when test="${dto.deptCode == 99}">관리자</c:when>
-									                                    <c:otherwise>기타 부서</c:otherwise>
-									                                </c:choose>
-									                            </h6>
-									                        </div>
+													            <small class="text-muted d-block mb-1">소속 부서</small>
+													            <h6 class="mb-0 fw-bold text-dark" id="txt-dept-name">
+													                ${dto.memDeptName} 
+													            </h6>
+													        </div>
 									                    </div>
 									                </div>
 									                <div class="col-sm-4">
@@ -189,24 +177,11 @@
 									                            <span class="avatar-initial rounded-circle bg-label-info"><i class='bx bx-briefcase fs-4'></i></span>
 									                        </div>
 									                        <div>
-									                            <small class="text-muted d-block mb-1">직급</small>
-									                            <h6 class="mb-0 fw-bold text-dark" id="txt-position-name">
-									                                <c:choose>
-									                                    <c:when test="${dto.positionCode == 1}">팀장</c:when>
-									                                    <c:when test="${dto.positionCode == 2}">차장</c:when>
-									                                    <c:when test="${dto.positionCode == 3}">과장</c:when>
-									                                    <c:when test="${dto.positionCode == 4}">대리</c:when>
-									                                    <c:when test="${dto.positionCode == 5}">주임</c:when>
-									                                    <c:when test="${dto.positionCode == 6}">사원</c:when>
-									                                    <c:when test="${dto.positionCode == 10}">이사</c:when>
-									                                    <c:when test="${dto.positionCode == 11}">상무</c:when>
-									                                    <c:when test="${dto.positionCode == 12}">전무</c:when>
-									                                    <c:when test="${dto.positionCode == 17}">가맹점</c:when>
-									                                    <c:when test="${dto.positionCode == 99}">관리자</c:when>
-									                                    <c:otherwise>직급 없음</c:otherwise>
-									                                </c:choose>
-									                            </h6>
-									                        </div>
+													            <small class="text-muted d-block mb-1">직급</small>
+													            <h6 class="mb-0 fw-bold text-dark" id="txt-position-name">
+													                ${dto.memPositionName}
+													            </h6>
+													        </div>
 									                    </div>
 									                </div>
 									                <div class="col-sm-4">
@@ -287,36 +262,24 @@
 									                
 									                <div class="row g-3 mb-4">
 									                    <div class="col-sm-4">
-									                        <label class="form-label text-muted">소속 부서 (관리자 전용)</label>
-									                        <select class="form-select form-select-lg" id="edit-dept" name="deptCode">
-									                            <option value="10" ${dto.deptCode == 10 ? 'selected' : ''}>인사팀</option>
-									                            <option value="11" ${dto.deptCode == 11 ? 'selected' : ''}>회계팀</option>
-									                            <option value="12" ${dto.deptCode == 12 ? 'selected' : ''}>재무팀</option>
-									                            <option value="13" ${dto.deptCode == 13 ? 'selected' : ''}>영업팀</option>
-									                            <option value="14" ${dto.deptCode == 14 ? 'selected' : ''}>CS팀</option>
-									                            <option value="15" ${dto.deptCode == 15 ? 'selected' : ''}>마케팅팀</option>
-									                            <option value="16" ${dto.deptCode == 16 ? 'selected' : ''}>개발팀</option>
-									                            <option value="17" ${dto.deptCode == 17 ? 'selected' : ''}>가맹점</option>
-									                            <option value="20" ${dto.deptCode == 20 ? 'selected' : ''}>임원</option>
-									                            <option value="99" ${dto.deptCode == 99 ? 'selected' : ''}>관리자</option>
-									                        </select>
-									                    </div>
-									                    <div class="col-sm-4">
-									                        <label class="form-label text-muted">직급 (관리자 전용)</label>
-									                        <select class="form-select form-select-lg" id="edit-position" name="positionCode">
-									                            <option value="1" ${dto.positionCode == 1 ? 'selected' : ''}>팀장</option>
-									                            <option value="2" ${dto.positionCode == 2 ? 'selected' : ''}>차장</option>
-									                            <option value="3" ${dto.positionCode == 3 ? 'selected' : ''}>과장</option>
-									                            <option value="4" ${dto.positionCode == 4 ? 'selected' : ''}>대리</option>
-									                            <option value="5" ${dto.positionCode == 5 ? 'selected' : ''}>주임</option>
-									                            <option value="6" ${dto.positionCode == 6 ? 'selected' : ''}>사원</option>
-									                            <option value="10" ${dto.positionCode == 10 ? 'selected' : ''}>이사</option>
-									                            <option value="11" ${dto.positionCode == 11 ? 'selected' : ''}>상무</option>
-									                            <option value="12" ${dto.positionCode == 12 ? 'selected' : ''}>전무</option>
-									                            <option value="17" ${dto.positionCode == 17 ? 'selected' : ''}>가맹점</option>
-									                            <option value="99" ${dto.positionCode == 99 ? 'selected' : ''}>관리자</option>
-									                        </select>
-									                    </div>
+														    <label class="form-label text-muted">소속 부서 (관리자 전용)</label>
+														    <select class="form-select form-select-lg" id="edit-dept" name="deptCode">
+														        <c:forEach var="dept" items="${deptList}"> <option value="${dept.deptCode}" ${dto.deptCode == dept.deptCode ? 'selected' : ''}>
+														                ${dept.memDeptName}
+														            </option>
+														        </c:forEach>
+														    </select>
+														</div>
+														
+														<div class="col-sm-4">
+														    <label class="form-label text-muted">직급 (관리자 전용)</label>
+														    <select class="form-select form-select-lg" id="edit-position" name="positionCode">
+														        <c:forEach var="pos" items="${positionList}"> <option value="${pos.positionCode}" ${dto.positionCode == pos.positionCode ? 'selected' : ''}>
+														                ${pos.memPositionName}
+														            </option>
+														        </c:forEach>
+														    </select>
+														</div>
 									                    <div class="col-sm-4">
 									                        <label class="form-label text-muted">입사일</label>
 									                        <input type="text" class="form-control form-control-lg bg-light" value="${dto.memHireDate}" readonly>
@@ -463,9 +426,13 @@
 												        <tr>
 												            <td>${attendance.memCommuteWorkDate}</td>
 												            
-												            <td class="in-time">${attendance.formattedInTime}</td>
+												            <td class="in-time">
+												                 ${not empty attendance.formattedInTime ? attendance.formattedInTime : fn:substring(attendance.memCommuteInTime, 11, 16)}
+												            </td>
 												            
-												            <td class="out-time">${attendance.formattedOutTime}</td>
+												            <td class="out-time">
+												                 ${not empty attendance.formattedOutTime ? attendance.formattedOutTime : fn:substring(attendance.memCommuteOutTime, 11, 16)}
+												            </td>
 												            
 												            <td>
 												                <c:choose>
@@ -477,7 +444,7 @@
 												                        <span class="badge bg-label-danger status-badge">${attendance.memCommuteState}</span>
 												                    </c:when>
 												                    
-												                    <c:when test="${fn:contains(attendance.memCommuteState, '반차') or fn:contains(attendance.memCommuteState, '휴가')}">
+												                    <c:when test="${fn:contains(attendance.memCommuteState, '반차') or fn:contains(attendance.memCommuteState, '휴가') or fn:contains(attendance.memCommuteState, '연차')}">
 												                        <span class="badge bg-label-primary status-badge">${attendance.memCommuteState}</span>
 												                    </c:when>
 												
@@ -491,7 +458,11 @@
 												                </c:choose>
 												            </td>
 												            
-												            <td></td> 
+												            <td>
+												                <span class="text-muted small">
+												                    <c:out value="${attendance.note}" default="" />
+												                </span>
+												            </td> 
 												            
 												            <td class="text-center">
 												                <button type="button" class="btn btn-sm btn-icon btn-outline-primary" onclick="openEditModal(this)">
@@ -617,15 +588,20 @@
 									                            </td>
 									                            
 									                            <td class="text-center">
-									                                <c:choose>
-									                                    <c:when test="${dto.appStatus eq '반려'}">
-									                                        <span class="text-muted text-decoration-line-through">-</span>
-									                                    </c:when>
-									                                    <c:otherwise>
-									                                        <span class="text-danger fw-bold">-${dto.memAttendanceUsedDays}</span>
-									                                    </c:otherwise>
-									                                </c:choose>
-									                            </td>
+																    <c:choose>
+																        <c:when test="${dto.appStatus eq '반려'}">
+																            <span class="text-muted text-decoration-line-through">
+																                -${dto.memAttendanceUsedDays}
+																            </span>
+																        </c:when>
+																        <c:otherwise>
+																            <span class="text-danger fw-bold">
+																                -${dto.memAttendanceUsedDays}
+																            </span>
+																        </c:otherwise>
+																    </c:choose>
+																</td>
+
 									                            
 									                            <td class="ps-4">
 									                                <span class="text-muted text-truncate d-inline-block" style="max-width: 300px; vertical-align: middle;">

@@ -282,7 +282,7 @@
 	
 	<!-- 물품 등록 모달 -->
 	<div class="modal fade" id="itemAddModal" tabindex="-1" aria-hidden="true">
-	  <div class="modal-dialog modal-lg modal-dialog-centered">
+	  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 	    <div class="modal-content">
 	
 	      <!-- 모달 헤더 -->

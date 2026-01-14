@@ -21,15 +21,23 @@
 		    ORDER BY 
 		    	ma.mem_attendance_start_date DESC
 	    </select>
-	    
-	  <select id="selectLeaveStats" parameterType="int" resultType="MemberLeaveStatsDTO">
+		
+		<select id="selectLeaveStats" parameterType="int" resultType="MemberLeaveStatsDTO">
 		    SELECT 
-		        mem_leave_total_days,
-		        mem_leave_used_days
-		    FROM member_leave
-		    WHERE member_id = #{memberId}
-		      AND mem_leave_year = YEAR(NOW())
+		        ml.mem_leave_total_days,
+		        (
+		            SELECT COALESCE(SUM(ma.mem_attendance_used_days), 0)
+		            FROM member_attendance ma
+		            JOIN approval a ON ma.approval_id = a.approval_id
+		            WHERE ma.member_id = ml.member_id
+		              AND a.app_status = '승인'
+		              AND YEAR(ma.mem_attendance_start_date) = YEAR(NOW())
+		        ) AS mem_leave_used_days
+		    FROM member_leave ml
+		    WHERE ml.member_id = #{memberId}
+		      AND ml.mem_leave_year = YEAR(NOW())
 		</select>
+		
 		
 		<select id="selectApprovedAttendance" parameterType="int" resultType="MemberAttendanceDTO">
 		    SELECT 

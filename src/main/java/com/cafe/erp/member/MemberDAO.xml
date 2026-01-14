@@ -90,6 +90,7 @@
 	
 	<select id="deptMemberCount" resultType="DeptCountDTO">
 	    SELECT
+	    	 D.mem_dept_group_name,
 	         M.dept_code, 
 	         D.mem_dept_name, 
 	         COUNT(M.member_id) as count
@@ -113,7 +114,7 @@
 	     </where>
 	
 	     GROUP BY 
-	        dept_code, D.mem_dept_name
+		     M.dept_code, D.mem_dept_name, D.mem_dept_group_name
 	     ORDER BY
 	        M.dept_code ASC
 	</select>
@@ -157,18 +158,42 @@
 	<select id="detail" parameterType="MemberDTO" resultType="MemberDTO">
     SELECT 
         m.*, 
-        (
-            SELECT mem_profile_saved_name 
-            FROM member_profile 
-            WHERE member_id = m.member_id 
-            AND mem_profile_is_active = true
-            LIMIT 1
-        ) AS memProfileSavedName
-    FROM 
-        member m
-    WHERE 
-        m.member_id = #{memberId}
-</select>
+        m.dept_code      AS deptCode,      m.position_code  AS positionCode,  d.mem_dept_name,     
+        p.mem_position_name,
+	        (
+	            SELECT mem_profile_saved_name 
+	            FROM member_profile 
+	            WHERE member_id = m.member_id 
+	            AND mem_profile_is_active = true
+	            LIMIT 1
+	        ) AS memProfileSavedName
+	    FROM 
+	        member m
+        LEFT JOIN member_dept d ON m.dept_code = d.member_dept_code
+	    LEFT JOIN member_position p ON m.position_code = p.member_position_code
+	    WHERE 
+	        m.member_id = #{memberId}
+	</select>
+
+	<select id="deptList" resultType="MemberDTO">
+	    SELECT 
+	        member_dept_code AS deptCode,      
+	        mem_dept_name    AS memDeptName
+	    FROM 
+	        member_dept
+	    ORDER BY 
+	        member_dept_code ASC
+	</select>
+	
+	<select id="positionList" resultType="MemberDTO">
+	    SELECT 
+	        member_position_code AS positionCode,   
+	        mem_position_name    AS memPositionName
+	    FROM 
+	        member_position
+	    ORDER BY 
+	        member_position_code ASC
+	</select>
 
 
 	<select id="findProfileSavedName" resultType="String">
