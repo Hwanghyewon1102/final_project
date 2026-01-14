@@ -37,7 +37,6 @@ $(document).ready(function () {
     } else {
       removeFromApprovalList(orderNo);
     }
-	updateActionButtons();
   });
 
 });
@@ -210,7 +209,6 @@ $(document).on('click', '#approveBtn', function () {
       resetApprovalList();
       resetCheckboxes();
       updateOrderStatusToApproved(orderNos);
-	  updateActionButtons();
     },
 
     error: function () {
