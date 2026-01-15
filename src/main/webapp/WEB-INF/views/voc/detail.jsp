@@ -199,7 +199,8 @@
 										</div>
 
 										<div class="d-flex align-items-center ${isMe ? 'justify-content-end me-1' : 'justify-content-start ms-1'} mt-1">
-											<c:if test="${isMe and process.processIsDeleted ne 1}">
+											<sec:authorize access="hasAnyRole('EXEC', 'MASTER')" var="isAdmin" />
+											<c:if test="${(isMe or isAdmin) and process.processIsDeleted ne 1}">
 												<i class="bx bx-trash text-secondary delete-btn me-2"
 												   style="cursor: pointer; font-size: 1rem;"
 												   onclick="deleteProcess('${process.processId}')"
@@ -218,21 +219,23 @@
                           <div class="card-footer p-3">
                               <div id="filePreview" class="d-flex flex-wrap gap-2 mb-2 small text-primary" style="display: none;">
 						    </div>
-						
-						    <div class="input-group input-group-merge">
-						        <label class="input-group-text bg-white border-end-0" for="replyFile" style="cursor: pointer;">
-						            <i class="bx bx-paperclip"></i>
-						        </label>
-						        
-						        <input type="file" multiple id="replyFile" style="display: none;" onchange="showFileName()">
-						
-								<input type="hidden" id="vocId" value="${dto.vocId}">
-						        <textarea class="form-control" id="processContents" rows="2" placeholder="메시지를 입력하세요..." style="resize: none; padding: 20px 10px 10px;"></textarea>
-						        
-						        <button class="btn btn-primary" type="button" onclick="submitVocProcess()">
-						            <i class="bx bx-send"></i> 등록
-						        </button>
-						    </div>
+
+						  	<sec:authorize access="hasAnyRole('STORE', 'DEPT_SALES','EXEC', 'MASTER')">
+								<div class="input-group input-group-merge">
+									<label class="input-group-text bg-white border-end-0" for="replyFile" style="cursor: pointer;">
+										<i class="bx bx-paperclip"></i>
+									</label>
+
+									<input type="file" multiple id="replyFile" style="display: none;" onchange="showFileName()">
+
+									<input type="hidden" id="vocId" value="${dto.vocId}">
+									<textarea class="form-control" id="processContents" rows="2" placeholder="메시지를 입력하세요..." style="resize: none; padding: 20px 10px 10px;"></textarea>
+
+									<button class="btn btn-primary" type="button" onclick="submitVocProcess()">
+										<i class="bx bx-send"></i> 등록
+									</button>
+								</div>
+							</sec:authorize>
                           </div>
                       </div>
                   </div>

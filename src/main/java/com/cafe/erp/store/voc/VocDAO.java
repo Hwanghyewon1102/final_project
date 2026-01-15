@@ -45,4 +45,6 @@ public interface VocDAO {
 	public int deleteFile(Integer processId) throws Exception;
 
 	public int deleteProcess(Integer processId) throws Exception;
+
+	public VocProcessDTO getProcess(Integer processId) throws Exception;
 }

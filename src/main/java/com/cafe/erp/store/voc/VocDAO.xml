@@ -308,6 +308,10 @@
 		SELECT * FROM voc_process_file WHERE process_id = #{processId}
 	</select>
 
+	<select id="getProcess" parameterType="Integer" resultType="VocProcessDTO">
+		SELECT * FROM voc_process WHERE process_id = #{processId}
+	</select>
+
 	<delete id="deleteFile">
 		DELETE FROM voc_process_file WHERE process_id = #{processId}
 	</delete>
