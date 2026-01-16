@@ -21,6 +21,7 @@ import com.cafe.erp.receivable.hq.HqPayableSearchDTO;
 import com.cafe.erp.receivable.hq.HqPayableSummaryDTO;
 import com.cafe.erp.receivable.hq.HqPayableTotalSummaryDTO;
 import com.cafe.erp.util.Pager;
+import com.cafe.erp.vendor.VendorDTO;
 
 import jakarta.validation.Valid;
 
@@ -73,13 +74,16 @@ public class ReceivableController {
 		model.addAttribute("receivableTransactionDTO", receivableTransactionDTO);
 	}
 	
+	
+	
 	@GetMapping("vendor")
-	public String index() {
+	public String receivableVendor() {
 		return "receivable/receivable-vendor";
 	}
-	
+
 	@PostMapping("vendor/search")
 	public String hqPayableSearch(HqPayableSearchDTO dto, Model model) {
+
 		List<HqPayableSummaryDTO> list = service.hqPayableSearchList(dto);
 
 		model.addAttribute("list", list);
@@ -93,6 +97,30 @@ public class ReceivableController {
 	public HqPayableTotalSummaryDTO hqPayableSummary(HqPayableSearchDTO dto) {
 		return service.getHqPayableSummary(dto);
 	}
+	
+	@GetMapping("vendor/detail")
+	public String vendorReceivableDetail(
+			@RequestParam Integer vendorCode,
+			@RequestParam String baseMonth,
+			Model model
+	) {
+		// 거래처 정보 조회
+		VendorDTO vendor = service.selectVendorInfo(vendorCode);
+		// 거래처 물품대금 내역
+		List<ReceivableOrderSummaryDTO> orderList = ;
+		
+		System.out.println(vendor.toString());
+		model.addAttribute("vendor",vendor);
+		model.addAttribute("baseMonth", baseMonth);
+		
+		
+		
+		
+		
+		
+	    return "receivable/hq-payable-detail";
+	}
+	
 	
 	
 }

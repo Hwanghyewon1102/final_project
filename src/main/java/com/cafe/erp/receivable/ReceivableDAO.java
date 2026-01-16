@@ -15,6 +15,7 @@ import com.cafe.erp.receivable.detail.ReceivableTransactionDTO;
 import com.cafe.erp.receivable.hq.HqPayableSearchDTO;
 import com.cafe.erp.receivable.hq.HqPayableSummaryDTO;
 import com.cafe.erp.receivable.hq.HqPayableTotalSummaryDTO;
+import com.cafe.erp.vendor.VendorDTO;
 
 @Mapper
 public interface ReceivableDAO {
@@ -78,16 +79,28 @@ public interface ReceivableDAO {
     
     // 거래처 코드
     
-	// 월 기준 목록/카운트
-	List<HqPayableSummaryDTO> selectHqPayableListByMonth(HqPayableSearchDTO dto);
-	Long selectHqPayableCountByMonth(HqPayableSearchDTO dto);
-	HqPayableTotalSummaryDTO selectHqPayableTotalSummaryByMonth(HqPayableSearchDTO dto);
+    public List<HqPayableSummaryDTO> selectHqPayableListByMonth(HqPayableSearchDTO dto);
 
-	// 전체(월 조건 없음) 목록/카운트
-	List<HqPayableSummaryDTO> selectHqPayableListAll(HqPayableSearchDTO dto);
-	Long selectHqPayableCountAll(HqPayableSearchDTO dto);
-	HqPayableTotalSummaryDTO selectHqPayableTotalSummaryAll(HqPayableSearchDTO dto);
-    
-    
+	public Long selectHqPayableCountByMonth(HqPayableSearchDTO dto);
+
+	public HqPayableTotalSummaryDTO selectHqPayableTotalSummaryByMonth(HqPayableSearchDTO dto);
+
+	// baseMonth 미선택: 전체를 (거래처+기준월)로 그룹핑해서 월별 row 생성
+	public List<HqPayableSummaryDTO> selectHqPayableListAllGroupedByMonth(HqPayableSearchDTO dto);
+
+	public Long selectHqPayableCountAllGroupedByMonth(HqPayableSearchDTO dto);
+
+	public HqPayableTotalSummaryDTO selectHqPayableTotalSummaryAllGroupedByMonth(HqPayableSearchDTO dto);
+	
+	
+	// 거래처 detail page
+	public VendorDTO selectVendorInfo(Integer vendorCode);
+	
+	
+	
+	
+	
+	
+	
     
 }
