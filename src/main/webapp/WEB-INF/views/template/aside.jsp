@@ -204,6 +204,11 @@
            <div data-i18n="Text Divider">부서 목록</div>
          </a>
        </li>
+       <li class="menu-item">
+         <a href="/member/admin_login_history" class="menu-link">
+           <div data-i18n="Text Divider">로그인 이력 목록</div>
+         </a>
+       </li>
       </ul>
     </li>
     <!-- User interface -->
@@ -240,7 +245,7 @@
         </li>
         <li class="menu-item">
           <a href="extended-ui-text-divider.html" class="menu-link">
-            <div data-i18n="Text Divider">Text Divider</div>
+            <div data-i18n="Text Divider">.</div>
           </a>
         </li>
       </ul>
@@ -251,18 +256,18 @@
     <!-- 상세내역 -->
     <li class="menu-item">
       <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-collection"></i>
-        <div data-i18n="Basic">채권</div>
+        <i class='menu-icon tf-icons bx bxl-bitcoin'></i> 
+        <div>채권</div>
       </a>
       <ul class="menu-sub">
        <li class="menu-item">
          <a href="/receivable/receivable" class="menu-link">
-           <div data-i18n="Perfect Scrollbar">미수금 목록</div>
+           <div>미수금 목록</div>
          </a>
        </li>
        <li class="menu-item">
-         <a href="extended-ui-text-divider.html" class="menu-link">
-           <div data-i18n="Text Divider">Text Divider</div>
+         <a href="/receivable/vendor" class="menu-link">
+           <div>미지급금 목록</div>
          </a>
        </li>
       </ul>

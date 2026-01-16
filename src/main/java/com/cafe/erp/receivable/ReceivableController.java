@@ -17,6 +17,9 @@ import com.cafe.erp.receivable.detail.ReceivableItemDTO;
 import com.cafe.erp.receivable.detail.ReceivableOrderSummaryDTO;
 import com.cafe.erp.receivable.detail.ReceivableRoyaltyDTO;
 import com.cafe.erp.receivable.detail.ReceivableTransactionDTO;
+import com.cafe.erp.receivable.hq.HqPayableSearchDTO;
+import com.cafe.erp.receivable.hq.HqPayableSummaryDTO;
+import com.cafe.erp.receivable.hq.HqPayableTotalSummaryDTO;
 import com.cafe.erp.util.Pager;
 
 import jakarta.validation.Valid;
@@ -68,14 +71,28 @@ public class ReceivableController {
 		model.addAttribute("receivableRoyaltyDTO", receivableRoyaltyDTO);
 		model.addAttribute("receivableAmountSummaryDTO", receivableAmountSummaryDTO);
 		model.addAttribute("receivableTransactionDTO", receivableTransactionDTO);
-		
-		
 	}
 	
+	@GetMapping("vendor")
+	public String index() {
+		return "receivable/receivable-vendor";
+	}
+	
+	@PostMapping("vendor/search")
+	public String hqPayableSearch(HqPayableSearchDTO dto, Model model) {
+		List<HqPayableSummaryDTO> list = service.hqPayableSearchList(dto);
 
-	
-	
-	
+		model.addAttribute("list", list);
+		model.addAttribute("pager", dto.getPager());
+
+		return "receivable/hq-payable-table";
+	}
+
+	@PostMapping("vendor/summary")
+	@ResponseBody
+	public HqPayableTotalSummaryDTO hqPayableSummary(HqPayableSearchDTO dto) {
+		return service.getHqPayableSummary(dto);
+	}
 	
 	
 }

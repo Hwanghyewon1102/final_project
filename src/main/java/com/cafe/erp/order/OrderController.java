@@ -105,7 +105,7 @@ public class OrderController {
 	@GetMapping("approval")
 	public String approval(Model model, @AuthenticationPrincipal UserDTO userDTO) {
 		MemberDTO member = userDTO.getMember();
-		List<Integer> statuses = List.of(100, 150); // 요청 + 반려
+		List<Integer> statuses = List.of(100, 150, 300); // 요청 + 반려
 	    return orderList(statuses, model, member);
 	}
 	// 입고 목록 요청
@@ -140,17 +140,38 @@ public class OrderController {
 	// 승인 요청
 	@PostMapping("approve")
 	@ResponseBody
-	public String approveOrder(@RequestBody List<OrderApproveRequestDTO> orderNos) {
-		orderService.approveOrder(orderNos);
+	public String approveOrder(@RequestBody List<OrderRequestDTO> orderNos, @AuthenticationPrincipal UserDTO userDTO) {
+		MemberDTO member = userDTO.getMember();
+		orderService.approveOrder(orderNos, member);
 		return "order/approval";
 	}
 	
 	// 반려 요청
 	@PostMapping("reject")
 	@ResponseBody
-	public String rejectOrder(@RequestBody OrderRejectDTO orderRejectDTO) {
-		orderService.rejectOrder(orderRejectDTO);
+	public String rejectOrder(
+			@RequestBody OrderRejectDTO orderRejectDTO,
+			@AuthenticationPrincipal UserDTO userDTO
+			) {
+		orderService.rejectOrder(orderRejectDTO,userDTO);
 		return "order/approval";
+	}
+	
+	// 입고 요청
+	@PostMapping("receive")
+	@ResponseBody
+	public String receive(@RequestBody List<OrderRequestDTO> orderNos,@AuthenticationPrincipal UserDTO userDTO) {
+		MemberDTO member = userDTO.getMember();
+		System.out.println("🔥 receive controller 진입");
+		orderService.receiveOrder(orderNos, member);
+		return "redirect:/order/receive";
+	}
+	
+	// 승인 취소 요청
+	@PostMapping("cancelApprove")
+	public String cancelApprove(@RequestBody List<OrderRequestDTO> orderNos) {
+		orderService.cancelApprove(orderNos);
+		return "redirect:/order/receive";
 	}
 
 }

@@ -14,6 +14,9 @@ import com.cafe.erp.receivable.detail.ReceivableItemDTO;
 import com.cafe.erp.receivable.detail.ReceivableOrderSummaryDTO;
 import com.cafe.erp.receivable.detail.ReceivableRoyaltyDTO;
 import com.cafe.erp.receivable.detail.ReceivableTransactionDTO;
+import com.cafe.erp.receivable.hq.HqPayableSearchDTO;
+import com.cafe.erp.receivable.hq.HqPayableSummaryDTO;
+import com.cafe.erp.receivable.hq.HqPayableTotalSummaryDTO;
 import com.cafe.erp.util.Pager;
 
 @Service
@@ -159,4 +162,68 @@ public class ReceivableService {
 		return dao.getAvailableReceivables(receivableSummaryDTO);
 	}
 	
+	// 본사 채권 생성
+    @Transactional
+    public void createReceivableForHqOrder(String hqOrderId) {
+
+        // 중복 생성 방지
+        if (dao.existsByHqOrderId(hqOrderId)) {
+            return;
+        }
+
+        Integer supplyAmount =
+        		dao.selectHqOrderSupplyAmount(hqOrderId);
+
+        dao.insertReceivableForHqOrder(
+                hqOrderId,
+                supplyAmount
+        );
+    }
+    // 가맹점 채권 생성
+    public void createReceivableForStoreOrder(String storeOrderId) {
+
+        if (dao.existsByStoreOrderId(storeOrderId)) {
+            return;
+        }
+
+        Integer supplyAmount =
+        		dao.selectStoreOrderSupplyAmount(storeOrderId);
+
+        dao.insertReceivableForStoreOrder(
+            storeOrderId,
+            supplyAmount
+        );
+    }
+    
+    // 거래처 코드
+	public List<HqPayableSummaryDTO> hqPayableSearchList(HqPayableSearchDTO dto) {
+
+		boolean hasBaseMonth = dto.getBaseMonth() != null && !dto.getBaseMonth().isBlank();
+
+		Long totalCount = hasBaseMonth
+				? dao.selectHqPayableCountByMonth(dto)
+				: dao.selectHqPayableCountAll(dto);
+
+		try {
+			Pager pager = dto.getPager();
+			pager.pageing(totalCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return hasBaseMonth
+				? dao.selectHqPayableListByMonth(dto)
+				: dao.selectHqPayableListAll(dto);
+	}
+
+	public HqPayableTotalSummaryDTO getHqPayableSummary(HqPayableSearchDTO dto) {
+		boolean hasBaseMonth = dto.getBaseMonth() != null && !dto.getBaseMonth().isBlank();
+
+		return hasBaseMonth
+				? dao.selectHqPayableTotalSummaryByMonth(dto)
+				: dao.selectHqPayableTotalSummaryAll(dto);
+	}
+    
+    
+    
 }
