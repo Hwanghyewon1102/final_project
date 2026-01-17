@@ -2,9 +2,7 @@ package com.cafe.erp.order;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -237,9 +235,6 @@ public class OrderController {
 	@ResponseBody
 	public String updateCancelReceiveStatusByStoreOrder(@RequestBody List<OrderRequestDTO> orderNos) {
 		orderService.updateCancelReceiveStatusByStoreOrder(orderNos);
-	public String receive(@RequestBody List<OrderRequestDTO> orderNos,@AuthenticationPrincipal UserDTO userDTO) {
-		MemberDTO member = userDTO.getMember();
-		orderService.receiveOrder(orderNos, member);
 		return "redirect:/order/receive";
 	}
 	
