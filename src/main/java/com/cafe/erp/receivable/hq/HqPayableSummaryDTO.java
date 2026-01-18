@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class HqPayableSummaryDTO {
 	
-	
+	private Integer vendorId;
     private Integer vendorCode;
     private String vendorName;
     private String baseMonth;

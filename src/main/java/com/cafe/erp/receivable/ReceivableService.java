@@ -15,6 +15,7 @@ import com.cafe.erp.receivable.detail.ReceivableOrderSummaryDTO;
 import com.cafe.erp.receivable.detail.ReceivableRoyaltyDTO;
 import com.cafe.erp.receivable.detail.ReceivableTransactionDTO;
 import com.cafe.erp.receivable.hq.HqPayablePaymentDTO;
+import com.cafe.erp.receivable.hq.HqPayableReceivableDTO;
 import com.cafe.erp.receivable.hq.HqPayableSearchDTO;
 import com.cafe.erp.receivable.hq.HqPayableSummaryDTO;
 import com.cafe.erp.receivable.hq.HqPayableTotalSummaryDTO;
@@ -182,6 +183,7 @@ public class ReceivableService {
                 supplyAmount
         );
     }
+    
     // 가맹점 채권 생성
     public void createReceivableForStoreOrder(String storeOrderId) {
 
@@ -198,6 +200,8 @@ public class ReceivableService {
         );
     }
     
+    
+    
     // 거래처 코드
     public List<HqPayableSummaryDTO> hqPayableSearchList(HqPayableSearchDTO dto) {
 
@@ -210,7 +214,7 @@ public class ReceivableService {
 			e.printStackTrace();
 		}
 
-        return dao.selectHqPayableListByMonth(dto);
+        return dao.selectHqPayableList(dto);
     }
 
 
@@ -218,60 +222,56 @@ public class ReceivableService {
 
         return dao.selectHqPayableTotalSummaryByMonth(dto);
     }
-
+    
+    public List<HqPayableReceivableDTO> getVendorReceivableList(
+            Integer vendorId,
+            String baseMonth
+    ) {
+        return dao.selectVendorReceivableList(vendorId, baseMonth);
+    }
+    
+    
+    
     @Transactional
     public void payHqReceivable(
             HqPayablePaymentDTO paymentDTO,
             UserDTO userDTO
     ) {
+        // 로그인 사용자
         Integer memberId = userDTO.getMember().getMemberId();
+
+        // 파라미터 검증
+        if (paymentDTO.getReceivableId() == null || paymentDTO.getReceivableId().isBlank()) {
+            throw new IllegalArgumentException("채권 정보가 없습니다.");
+        }
 
         Integer payAmount = paymentDTO.getPayAmount();
         if (payAmount == null || payAmount <= 0) {
             throw new IllegalArgumentException("지급 금액이 올바르지 않습니다.");
         }
 
-        Integer remainAmount = dao.selectVendorRemainAmountByMonth(
-                paymentDTO.getVendorCode(),
-                paymentDTO.getBaseMonth()
-        );
+        //  해당 채권의 남은 금액 조회
+        Integer remainAmount =
+                dao.selectReceivableRemainAmount(paymentDTO.getReceivableId());
 
         if (remainAmount == null || remainAmount <= 0) {
-            throw new IllegalStateException("지급 대상 채권이 없습니다.");
+            throw new IllegalStateException("이미 지급 완료된 채권입니다.");
         }
 
         if (payAmount > remainAmount) {
             throw new IllegalArgumentException("지급 금액이 남은 미지급 금액을 초과했습니다.");
         }
 
-        List<ReceivableRemainDTO> receivables =
-                dao.selectReceivablesByVendorAndBaseMonth(
-                        paymentDTO.getVendorCode(),
-                        paymentDTO.getBaseMonth()
-                );
-        if (receivables == null || receivables.isEmpty()) {
-            throw new IllegalStateException("지급 대상 채권이 없습니다.");
-        }
+        //  지급 트랜잭션 insert
+        ReceivableCollectionRequestDTO insertDTO =
+                new ReceivableCollectionRequestDTO();
 
-        int remainToPay = payAmount;
-        
-        
-        for (ReceivableRemainDTO r : receivables) {
-            if (remainToPay <= 0) break;
+        insertDTO.setReceivableId(paymentDTO.getReceivableId());
+        insertDTO.setAmount(payAmount);
+        insertDTO.setMemo(paymentDTO.getMemo());
+        insertDTO.setMemberId(memberId);
 
-            int pay = Math.min(r.getRemainAmount(), remainToPay);
-
-            ReceivableCollectionRequestDTO insertDTO =
-                    new ReceivableCollectionRequestDTO();
-
-            insertDTO.setReceivableId(r.getReceivableId());
-            insertDTO.setAmount(pay);
-            insertDTO.setMemo(paymentDTO.getMemo());
-            insertDTO.setMemberId(memberId);
-
-            dao.insertHqPayment(insertDTO);
-
-            remainToPay -= pay;
-        }
+        dao.insertHqPayment(insertDTO);
     }
+
 }

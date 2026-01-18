@@ -19,28 +19,79 @@ document.addEventListener('click', function (e) {
   const modalEl = document.getElementById('payModal');
   const modal = new bootstrap.Modal(modalEl);
 
+  const vendorId = Number(btn.dataset.vendorId);
   const vendorCode = btn.dataset.vendorCode;
   const vendorName = btn.dataset.vendorName;
   const baseMonth = btn.dataset.baseMonth;
-  const remainAmount = Number(btn.dataset.remainAmount);
-
-  // hidden / readonly 값 세팅
+  // 기본 값 세팅
+  modalEl.querySelector('[name=vendorId]').value = vendorId;
   modalEl.querySelector('[name=vendorCode]').value = vendorCode;
   modalEl.querySelector('[name=vendorName]').value = vendorName;
   modalEl.querySelector('[name=baseMonth]').value = baseMonth;
   modalEl.querySelector('[name=baseMonthView]').value = baseMonth;
 
-  modalEl.querySelector('[name=remainAmount]').value = remainAmount;
-  modalEl.querySelector('[name=remainAmountView]').value =
-    formatNumber(remainAmount);
-
-  // ⭐ 지급 금액은 항상 0부터 시작
+  // 남은금액/지급금액 초기화
+  modalEl.querySelector('[name=remainAmount]').value = 0;
+  modalEl.querySelector('[name=remainAmountView]').value = formatNumber(0);
   modalEl.querySelector('[name=payAmount]').value = '0';
-
   modalEl.querySelector('[name=memo]').value = '';
+
+  // 채권 select 초기화
+  const select = modalEl.querySelector('#receivableSelect');
+  select.innerHTML = `<option value="">채권을 선택하세요</option>`;
+
+  fetch(`/receivable/vendor/receivables?vendorId=${vendorId}&baseMonth=${encodeURIComponent(baseMonth)}`)
+    .then(res => {
+      if (!res.ok) throw new Error();
+      return res.json();
+    })
+    .then(list => {
+      if (!Array.isArray(list) || list.length === 0) {
+        // 채권이 없으면 지급 불가 안내
+        modalEl.querySelector('[name=remainAmount]').value = 0;
+        modalEl.querySelector('[name=remainAmountView]').value = formatNumber(0);
+        return;
+      }
+
+      list.forEach(r => {
+        const option = document.createElement('option');
+        option.value = r.receivableId;
+        option.dataset.remain = r.remainAmount;
+
+        option.textContent =
+          `${r.receivableId}`;
+
+        select.appendChild(option);
+      });
+
+      select.selectedIndex = 1;
+      const firstRemain = Number(select.options[1].dataset.remain) || 0;
+      modalEl.querySelector('[name=remainAmount]').value = firstRemain;
+      modalEl.querySelector('[name=remainAmountView]').value = formatNumber(firstRemain);
+      modalEl.querySelector('[name=payAmount]').value = '0';
+    })
+    .catch(() => {
+      alert('채권 목록 조회 중 오류가 발생했습니다.');
+    });
 
   modal.show();
 });
+
+document.addEventListener('change', function (e) {
+  const select = e.target.closest('#receivableSelect');
+  if (!select) return;
+
+  const modalEl = document.getElementById('payModal');
+  const selected = select.options[select.selectedIndex];
+  const remain = Number(selected.dataset.remain) || 0;
+
+  modalEl.querySelector('[name=remainAmount]').value = remain;
+  modalEl.querySelector('[name=remainAmountView]').value = formatNumber(remain);
+
+  modalEl.querySelector('[name=payAmount]').value = '0';
+});
+
+
 
 /* ===============================
  * 금액 버튼 (1만 / 5만 / 10만)
@@ -118,7 +169,14 @@ document
 document.getElementById('btnPaySubmit').addEventListener('click', function () {
 
   const form = document.getElementById('payForm');
-  const data = new FormData(form);
+  const data = new FormData(form); // ✅ 먼저 선언
+
+  const receivableId = data.get('receivableId'); // ✅ 이제 안전
+
+  if (!receivableId) {
+    alert('채권을 선택하세요.');
+    return;
+  }
 
   const payAmount = unformatNumber(data.get('payAmount'));
   const remain = unformatNumber(data.get('remainAmount'));
@@ -133,7 +191,6 @@ document.getElementById('btnPaySubmit').addEventListener('click', function () {
     return;
   }
 
-  // 서버에는 숫자만 전달
   data.set('payAmount', payAmount);
 
   fetch('/receivable/hq/pay', {
@@ -146,16 +203,13 @@ document.getElementById('btnPaySubmit').addEventListener('click', function () {
     })
     .then(() => {
       alert('지급 처리되었습니다.');
-
-      bootstrap.Modal
-        .getInstance(document.getElementById('payModal'))
-        .hide();
-
-      if (typeof searchPayables === 'function') {
-        searchPayables();
-      }
+      bootstrap.Modal.getInstance(
+        document.getElementById('payModal')
+      ).hide();
+      searchPayables();
     })
     .catch(() => {
       alert('지급 처리 중 오류가 발생했습니다.');
     });
 });
+

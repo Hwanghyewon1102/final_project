@@ -3,7 +3,9 @@ package com.cafe.erp.order;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cafe.erp.member.MemberDTO;
 import com.cafe.erp.notification.service.NotificationService;
 import com.cafe.erp.order.event.OrderReceivedEvent;
+import com.cafe.erp.receivable.ReceivableDAO;
 import com.cafe.erp.security.UserDTO;
 import com.cafe.erp.stock.StockDTO;
 import com.cafe.erp.stock.StockInoutDTO;
@@ -29,6 +32,9 @@ public class OrderService {
 	
 	@Autowired
 	private NotificationService notificationService;
+	
+	@Autowired
+	private ReceivableDAO receivableDAO;
 	
 	@Autowired
 	private StockService stockService;
@@ -270,6 +276,49 @@ public class OrderService {
                         new OrderReceivedEvent("HQ", orderNo.getOrderNo())
                 );
 	            orderDetailList = orderDAO.getHqOrderDetail(orderNo.getOrderNo());
+	            // order_hq_vendor 테이블에 발주 삽입 로직
+	            Map<Integer, OrderHqVendorDTO> vendorMap = new HashMap<>();
+
+	            for (OrderDetailDTO d : orderDetailList) {
+
+	                int vendorId = d.getVendorId();           // 반드시 있어야 함
+	                int supplyAmount = d.getHqOrderAmount();  // 공급가
+
+	                OrderHqVendorDTO dto = vendorMap.get(vendorId);
+
+	                if (dto == null) {
+	                    dto = new OrderHqVendorDTO();
+	                    dto.setHqOrderId(orderNo.getOrderNo());
+	                    dto.setVendorId(vendorId);
+	                    dto.setOrderSupplyAmount(0);
+	                    dto.setOrderTaxAmount(0);
+	                    dto.setOrderTotalAmount(0);
+
+	                    vendorMap.put(vendorId, dto);
+	                }
+
+	                // 공급가 누적
+	                dto.setOrderSupplyAmount(
+	                    dto.getOrderSupplyAmount() + supplyAmount
+	                );
+	            }
+
+	            // 세액 / 합계 계산
+	            for (OrderHqVendorDTO dto : vendorMap.values()) {
+
+	                int supply = dto.getOrderSupplyAmount();
+	                int tax = (int) (supply * 0.1);   // ⚠️ 세율 다르면 여기 수정 필요
+	                int total = supply + tax;
+
+	                dto.setOrderTaxAmount(tax);
+	                dto.setOrderTotalAmount(total);
+	            }
+
+	            // DB INSERT
+	            for (OrderHqVendorDTO dto : vendorMap.values()) {
+	                orderDAO.insertOrderHqVendorByDto(dto);
+	            }
+	            receivableDAO.insertReceivableForHqOrder(orderNo.getOrderNo());
 	            // 3 입출고번호 생성(입출고타입, 창고번호, 본사발주번호, 가맹발주번호)
 	            warehouseNo = 11;
 	            stockInoutDTO = settingStock(orderNo.getOrderType(), 11, orderNo.getOrderNo());

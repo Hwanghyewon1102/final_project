@@ -50,7 +50,9 @@
 	      <td class="text-center">
 			<button
 			  type="button"
+			  id="btnPaySubmit"
 			  class="btn btn-sm btn-primary btn-pay"
+			  data-vendor-id="${row.vendorId}"
 			  data-vendor-code="${row.vendorCode}"
 			  data-vendor-name="${row.vendorName}"
 			  data-base-month="${row.baseMonth}"

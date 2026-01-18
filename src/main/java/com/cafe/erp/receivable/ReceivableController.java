@@ -18,6 +18,7 @@ import com.cafe.erp.receivable.detail.ReceivableOrderSummaryDTO;
 import com.cafe.erp.receivable.detail.ReceivableRoyaltyDTO;
 import com.cafe.erp.receivable.detail.ReceivableTransactionDTO;
 import com.cafe.erp.receivable.hq.HqPayablePaymentDTO;
+import com.cafe.erp.receivable.hq.HqPayableReceivableDTO;
 import com.cafe.erp.receivable.hq.HqPayableSearchDTO;
 import com.cafe.erp.receivable.hq.HqPayableSummaryDTO;
 import com.cafe.erp.receivable.hq.HqPayableTotalSummaryDTO;
@@ -98,6 +99,18 @@ public class ReceivableController {
 	public HqPayableTotalSummaryDTO hqPayableSummary(HqPayableSearchDTO dto) {
 		return service.getHqPayableSummary(dto);
 	}
+	
+	// 지급 폼 채권 목록 조회
+	@GetMapping("vendor/receivables")
+	@ResponseBody
+	public List<HqPayableReceivableDTO> getVendorReceivables(
+	        @RequestParam Integer vendorId,
+	        @RequestParam String baseMonth
+	) {
+	    return service.getVendorReceivableList(vendorId, baseMonth);
+	}
+	
+	
 	
 	@PostMapping("/hq/pay")
 	@ResponseBody	

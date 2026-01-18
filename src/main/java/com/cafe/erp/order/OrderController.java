@@ -213,6 +213,7 @@ public class OrderController {
 	@PostMapping("receive")
 	@ResponseBody
 	public String receive(@RequestBody List<OrderRequestDTO> orderNos) {
+		System.out.println("입고 메서드 실행");
 		orderService.inoutOrder(orderNos, "IN");
 		return "redirect:/order/receive";
 	}

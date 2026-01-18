@@ -272,4 +272,28 @@
 		      AND stock_quantity >= #{item.hqOrderQty}
 		  </foreach>
     	</update>
+    	
+    	<!-- 입고 변경 시 order_hq_store에 insert 로직 -->
+    	<insert id="insertOrderHqVendorByDto">
+		    INSERT INTO order_hq_vendor (
+		        hq_order_id,
+		        vendor_id,
+		        order_supply_amount,
+		        order_tax_amount,
+		        order_total_amount,
+		        order_vendor_created_at
+		    ) VALUES (
+		        #{hqOrderId},
+		        #{vendorId},
+		        #{orderSupplyAmount},
+		        #{orderTaxAmount},
+		        #{orderTotalAmount},
+		        NOW()
+		    )
+		</insert>
+    	
+    	
+    	
+    	
+    	
     </mapper>

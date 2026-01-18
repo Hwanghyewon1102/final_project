@@ -14,6 +14,7 @@ import com.cafe.erp.receivable.detail.ReceivableOrderSummaryDTO;
 import com.cafe.erp.receivable.detail.ReceivableRoyaltyDTO;
 import com.cafe.erp.receivable.detail.ReceivableTransactionDTO;
 import com.cafe.erp.receivable.hq.HqPayablePaymentDTO;
+import com.cafe.erp.receivable.hq.HqPayableReceivableDTO;
 import com.cafe.erp.receivable.hq.HqPayableSearchDTO;
 import com.cafe.erp.receivable.hq.HqPayableSummaryDTO;
 import com.cafe.erp.receivable.hq.HqPayableTotalSummaryDTO;
@@ -81,38 +82,33 @@ public interface ReceivableDAO {
 
     
     // 거래처 코드
-    public List<HqPayableSummaryDTO> selectHqPayableListByMonth(HqPayableSearchDTO dto);
+    public List<HqPayableSummaryDTO> selectHqPayableList(HqPayableSearchDTO dto);
 
 	public Long selectHqPayableCountByMonth(HqPayableSearchDTO dto);
 
 	public HqPayableTotalSummaryDTO selectHqPayableTotalSummaryByMonth(HqPayableSearchDTO dto);
-
+	// 지급 처리 폼 거래처 채권 목록 조회
+	public List<HqPayableReceivableDTO> selectVendorReceivableList(
+	        @Param("vendorId") Integer vendorId,
+	        @Param("baseMonth") String baseMonth
+	);
+	
+	// 4) 지급 insert
+	void insertHqPayment(ReceivableCollectionRequestDTO dto);
+	
 	public void payHqReceivable(HqPayablePaymentDTO dto);
+
+    // 단일 채권 남은 금액 조회
+    Integer selectReceivableRemainAmount(
+            @Param("receivableId") String receivableId
+    );
+
     
-    List<ReceivableRemainDTO> selectReceivablesByVendorAndBaseMonth(
-            @Param("vendorCode") Integer vendorCode,
-            @Param("baseMonth") String baseMonth
-    );
-
-    // 2) vendor + 기준월 -> 총 발주 금액 (너가 쓰던거)
-    Integer selectVendorTotalAmountByMonth(
-            @Param("vendorCode") Integer vendorCode,
-            @Param("baseMonth") String baseMonth
-    );
-
-    // 3) vendor + 기준월 -> 남은 미지급 금액 (너가 쓰던거)
-    Integer selectVendorRemainAmountByMonth(
-            @Param("vendorCode") Integer vendorCode,
-            @Param("baseMonth") String baseMonth
-    );
-
-    // 4) 지급 insert
-    void insertHqPayment(ReceivableCollectionRequestDTO dto);
-
-    // 5) 상태 업데이트 (vendor+month 단위로)
-    void updateReceivableStatusByVendorAndMonth(
-            @Param("vendorCode") Integer vendorCode,
-            @Param("baseMonth") String baseMonth,
-            @Param("status") String status
-    );
+    
+    
+    
+    
+    
+    
+    
 }

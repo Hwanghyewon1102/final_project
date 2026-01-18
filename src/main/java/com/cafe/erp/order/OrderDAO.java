@@ -65,4 +65,7 @@ public interface OrderDAO {
 
 	public void releaseByHq(List<OrderDetailDTO> releaseItemList);
 	
+	// 입고 변경 시 order_hq_vendor 테이블에 insert 로직
+	void insertOrderHqVendorByDto(OrderHqVendorDTO dto);
+	
 }

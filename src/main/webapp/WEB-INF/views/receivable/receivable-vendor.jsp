@@ -205,10 +205,19 @@
 	      <div class="modal-body">
 	        <form id="payForm">
 	
-	          <!-- hidden 값 -->
-	          <input type="hidden" name="vendorCode">
-	          <input type="hidden" name="baseMonth">
-	          <input type="hidden" name="remainAmount">
+				<!-- hidden 값 -->
+				<input type="hidden" name="vendorId">
+				<input type="hidden" name="vendorCode">
+				<input type="hidden" name="baseMonth">
+				<input type="hidden" name="remainAmount">
+				
+				<!-- 채권 선택 -->
+				<div class="mb-3">
+				  <label class="form-label">채권 선택</label>
+				  <select class="form-select" name="receivableId" id="receivableSelect">
+				    <option value="">채권을 선택하세요</option>
+				  </select>
+				</div>
 	
 	          <!-- 거래처 / 기준월 -->
 	          <div class="row mb-3">
