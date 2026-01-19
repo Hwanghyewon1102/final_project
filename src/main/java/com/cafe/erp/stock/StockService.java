@@ -2,20 +2,26 @@ package com.cafe.erp.stock;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.cafe.erp.order.OrderDAO;
 import com.cafe.erp.order.OrderDetailDTO;
 import com.cafe.erp.order.OrderService;
+import com.cafe.erp.stock.StoreInventoryDTO;
 
 @Service
 public class StockService {
 	
 	@Autowired
 	private StockDAO stockDAO;
+	
+	@Autowired
+	private OrderDAO orderDAO;
 
 	public StockDTO insertStockHistory(StockDTO stockDTO, OrderDetailDTO orderDetailDTO) {
-		stockDTO.setStockInoutType("IN");
 		stockDTO.setItemId(orderDetailDTO.getItemId());
 		stockDTO.setStockQuantity(orderDetailDTO.getHqOrderQty());
 		stockDAO.insertStockHistory(stockDTO);
@@ -46,4 +52,93 @@ public class StockService {
 		return stockDAO.getStockByWarehouseId(warehouseId);
 	}
 	
+	// 재고 사용 요청
+	// 보유중인 재고 목록 가져오기
+	public List<StoreInventoryDTO> getStoreInventory(Integer memberId) {
+		int storeId = stockDAO.getStoreIdBymemberId(memberId);
+		int warehouseId = stockDAO.getWarehouseIdByStoreId(storeId);
+        return stockDAO.selectStoreInventory(warehouseId);
+    }
+	
+	@Transactional
+	public void storeStockUse(
+	    List<StoreInventoryDTO> items,
+	    int memberId,
+	    String releaseType,
+	    String releaseReason
+	) {
+		int storeId = stockDAO.getStoreIdBymemberId(memberId);
+		int warehouseId = stockDAO.getWarehouseIdByStoreId(storeId);
+	    
+		// 출고 타입 검증
+	    if (!List.of("use", "faulty").contains(releaseType)) {
+	        throw new IllegalArgumentException("잘못된 출고 타입");
+	    }
+
+	    // faulty일 경우 사유 필수
+	    if ("faulty".equals(releaseType) && (releaseReason == null || releaseReason.isBlank())) {
+	        throw new IllegalArgumentException("상품불량 사유는 필수입니다");
+	    }
+
+	    // 재고 검증
+	    for (StoreInventoryDTO item : items) {
+	    	StockDTO stockdto = new StockDTO();
+	    	stockdto.setWarehouseId(warehouseId);
+	    	stockdto.setItemId(item.getItemId());
+	        int currentStock = stockDAO.existsStock(stockdto);
+
+	        if (currentStock < item.getQuantity()) {
+	            throw new IllegalStateException(
+	                "재고 부족: itemId=" + item.getItemId()
+	            );
+	        }
+	    }
+
+	    // 1️ 출고 마스터 생성
+	    StockInoutDTO stockInoutDTO = new StockInoutDTO();
+	    stockInoutDTO.setInputType("OUT");
+	    stockInoutDTO.setWarehouseId(warehouseId);
+	    orderDAO.insertOrderInOut(stockInoutDTO);
+	    int inputId = stockInoutDTO.getInputId();
+
+	    // 2️ 출고 상세 (사유 포함)
+	    StockReleaseDetailDTO stockReleaseDetailDTO = new StockReleaseDetailDTO();
+	    stockReleaseDetailDTO.setReleaseType("OUT");
+	    stockReleaseDetailDTO.setInputId(inputId);
+	    stockReleaseDetailDTO.setReleaseReason(releaseReason);
+	    stockDAO.insertReleaseDetail(stockReleaseDetailDTO);
+
+	    // 3️ 재고 차감 + 이력
+	    for (StoreInventoryDTO item : items) {
+	    	item.setWarehouseId(warehouseId);
+	    	stockDAO.updateStock(item);
+	    	
+	    	StockDTO stockDTO = new StockDTO();
+	    	stockDTO.setStockInoutType("OUT");
+	    	stockDTO.setStockQuantity(item.getQuantity());
+	    	stockDTO.setItemId(item.getItemId());
+	    	stockDTO.setWarehouseId(warehouseId);
+	    	stockDTO.setInputId(inputId);
+	    	stockDAO.insertStockHistory(stockDTO);
+	    	
+	    }
+	}
+	
+	/**
+     * 가맹 출고 마스터 목록
+     */
+    public List<StockReleaseDTO> getStoreReleaseList(Integer memberId) {
+    	
+    	Integer storeId = stockDAO.getStoreIdBymemberId(memberId);
+    	Integer warehouseId = stockDAO.getWarehouseIdByStoreId(storeId);
+    	List<StockReleaseDTO> list = stockDAO.selectStoreReleaseList(warehouseId);
+        return list;
+    }
+
+    /**
+     * 출고 상세 (OUT 내역)
+     */
+    public List<StockReleaseItemDTO> getStoreReleaseDetail(Integer inputId) {
+        return stockDAO.selectStoreReleaseDetail(inputId);
+    }
 }

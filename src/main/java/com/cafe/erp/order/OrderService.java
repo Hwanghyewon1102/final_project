@@ -21,7 +21,6 @@ import com.cafe.erp.stock.StockDAO;
 import com.cafe.erp.stock.StockDTO;
 import com.cafe.erp.stock.StockInoutDTO;
 import com.cafe.erp.stock.StockService;
-import com.cafe.erp.order.StoreInventoryDTO;
 
 @Service
 public class OrderService {
@@ -363,6 +362,7 @@ public class OrderService {
 	    		StockDTO stockDTO = new StockDTO();
 	        	stockDTO.setWarehouseId(warehouseNo);
 	            stockDTO.setInputId(inputId);
+	            stockDTO.setStockInoutType("IN");
 	            
 	            // 5-1️ 재고 이력 INSERT
 	            stockDTO = stockService.insertStockHistory(stockDTO, d);
@@ -453,11 +453,5 @@ public class OrderService {
 		}
 	}
 	
-	// 재고 사용 요청
-	// 보유중인 재고 목록 가져오기
-	public List<StoreInventoryDTO> getStoreInventory(Integer memberId) {
-		int storeId = stockDAO.getStoreIdBymemberId(memberId);
-		int warehouseId = stockDAO.getWarehouseIdByStoreId(storeId);
-        return orderDAO.selectStoreInventory(warehouseId);
-    }
+
 }

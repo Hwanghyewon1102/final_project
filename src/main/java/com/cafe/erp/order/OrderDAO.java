@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import com.cafe.erp.item.ItemDTO;
 import com.cafe.erp.member.MemberDTO;
 import com.cafe.erp.stock.StockInoutDTO;
-import com.cafe.erp.order.StoreInventoryDTO;
 
 @Mapper
 public interface OrderDAO {
@@ -69,5 +68,4 @@ public interface OrderDAO {
 	// 입고 변경 시 order_hq_vendor 테이블에 insert 로직
 	void insertOrderHqVendorByDto(OrderHqVendorDTO dto);
 	
-	public List<StoreInventoryDTO> selectStoreInventory(@Param("warehouseId") Integer warehouseId);
 }
