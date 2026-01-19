@@ -201,7 +201,7 @@
 			osh.item_id as itemId,
 			osh.stock_quantity as orderQty 
 			from order_in_out oio
-			join order_stock_history osh on oio.input_id = osh.input_id  where oio.hq_order_id = #{orderNo}
+			join order_stock_history osh on oio.input_id = osh.input_id where oio.hq_order_id = #{orderNo}
 		</select>
 		<delete id="deleteStockHistory" parameterType="Integer">
 			DELETE FROM order_stock_history WHERE input_id = #{inputId};
@@ -213,7 +213,8 @@
 			UPDATE order_stock
 			SET stock_quantity = stock_quantity - #{orderQty}
 			WHERE warehouse_id = #{warehouseId}
-  			AND item_id = #{itemId};
+  			AND item_id = #{itemId}
+  			AND stock_quantity >= #{orderQty}
 		</update>
 		
 		

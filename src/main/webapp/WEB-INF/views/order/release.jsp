@@ -270,7 +270,8 @@
 <script src="/js/main.js"></script>
 
 <!-- Page JS -->
-<script src="/js/order/storeRelease.js"></script>
+<script src="/js/order/orderApprove.js"></script>
+<script src="/js/order/orderRelease.js"></script>
 
 </body>
 </html>

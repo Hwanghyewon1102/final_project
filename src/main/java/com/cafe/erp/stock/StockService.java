@@ -86,8 +86,9 @@ public class StockService {
 	    	stockdto.setWarehouseId(warehouseId);
 	    	stockdto.setItemId(item.getItemId());
 	    	Integer currentStock = stockDAO.existsStockForRelease(stockdto);
-
-	        if (currentStock < item.getQuantity()) {
+	    	
+	    	// 어차피 기입 시 현재 재고보다 많이 못 받음 하지만 null처리 해줌으로서 2중 방지
+	        if (currentStock < item.getQuantity() || currentStock == null) {
 	            throw new IllegalStateException(
 	                "재고 부족: itemId=" + item.getItemId()
 	            );

@@ -443,7 +443,7 @@ public class OrderService {
 			for (OrderDetailDTO d : releaseItemList) {
 
 	            int updated = orderDAO.releaseByHq(d);
-
+	            
 	            if (updated == 0) {
 	                throw new IllegalStateException(
 	                    "재고 부족으로 출고 불가 (itemId=" + d.getItemId() + ")"
