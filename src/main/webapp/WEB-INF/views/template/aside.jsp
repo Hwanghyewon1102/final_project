@@ -49,7 +49,7 @@ transition-duration: 0.3s;
   <ul class="menu-inner py-1">
     <!-- Dashboard -->
     <li class="menu-item">
-      <a href="/" class="menu-link">
+      <a href="/member/member_mypage" class="menu-link">
         <i class="menu-icon tf-icons bx bx-home-circle"></i>
         <div data-i18n="Analytics">HOME</div>
       </a>
@@ -171,11 +171,6 @@ transition-duration: 0.3s;
 	       </li>
 	    </sec:authorize>
        <li class="menu-item">
-         <a href="/member/member_mypage" class="menu-link">
-           <div data-i18n="Text Divider">근태 목록</div>
-         </a>
-       </li>
-       <li class="menu-item">
          <a href="/member/AM_group_chart" class="menu-link">
            <div data-i18n="Text Divider">부서 목록</div>
          </a>
@@ -203,6 +198,7 @@ transition-duration: 0.3s;
         </li>
       </ul>
     </li>
+
 	<!-- 채권 -->
     <li class="menu-header small text-uppercase"><span class="menu-header-text">채권</span></li>
     <!-- 상세내역 -->
@@ -223,7 +219,8 @@ transition-duration: 0.3s;
          </a>
        </li>
       </ul>
-    </li>   
+    </li>
+
   </ul>
 </aside>
 
