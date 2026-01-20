@@ -30,7 +30,7 @@
         <div class="layout-page">
             <c:import url="/WEB-INF/views/template/header.jsp"></c:import>
 
-            <div class="content-wrapper">
+            <div class="content-wrapper d-flex flex-column">
                 <div class="container-xxl flex-grow-1 container-p-y" style="padding-top: 3rem !important;">
                     
                     <h4 class="fw-bold py-3 mb-4">
