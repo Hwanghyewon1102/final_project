@@ -64,6 +64,8 @@ public class CompanyHolidayService {
                         dto.setComHolidayType("법정공휴일");
                         dto.setMemberId(999999); 
                         companyHolidayDAO.insertHoliday(dto);
+                        
+                        
                     }
                 }
             }
