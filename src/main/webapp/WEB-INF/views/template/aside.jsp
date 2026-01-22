@@ -52,12 +52,12 @@
       <ul class="menu-sub">
         <li class="menu-item">
           <a href="/item/list" class="menu-link">
-            <div data-i18n="Notifications">원재료검색</div>
+            <div data-i18n="Notifications">원재료</div>
           </a>
         </li>
         <li class="menu-item">
           <a href="/item/priceDetail" class="menu-link">
-            <div data-i18n="Notifications">단가조회</div>
+            <div data-i18n="Notifications">단가</div>
           </a>
         </li>
         <li class="menu-item">
