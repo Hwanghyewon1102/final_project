@@ -87,9 +87,14 @@ function renderTable(deptCode, deptName = currentDeptName, updateCounts = false)
 				renderPager(pager);
 			}
         },
-        error: function(xhr, status, error) {
+        /*error: function(xhr, status, error) {
             console.error("데이터 로드 실패:", error);
-        }
+        }*/
+		error: function(xhr, status, error) {
+		  console.error("데이터 로드 실패:",
+		    { status, error, httpStatus: xhr.status, responseText: xhr.responseText, responseJSON: xhr.responseJSON }
+		  );
+		}
     });
 }
 

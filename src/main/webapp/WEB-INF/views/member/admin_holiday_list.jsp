@@ -253,7 +253,7 @@
 	</sec:authorize>
 
 	<div class="modal fade" id="holidayEditModal" tabindex="-1">
-		<div class="modal-dialog modal-sm modal-dialog-scrollable">
+		<div class="modal-dialog modal-sm modal-dialog-centered  modal-dialog-scrollable">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">회사 휴무일 수정</h5>

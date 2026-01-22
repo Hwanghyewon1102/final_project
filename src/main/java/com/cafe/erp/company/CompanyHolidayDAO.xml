@@ -29,9 +29,9 @@
 		
 		  <insert id="insertHoliday" parameterType="CompanyHolidayDTO">
 		    INSERT INTO company_holiday(
-		      com_holiday_date, com_holiday_name, com_holiday_type, member_id, com_holiday_is_active
+		      com_holiday_date, com_holiday_name, com_holiday_type, member_id, com_holiday_is_active, com_holiday_created_time
 		    ) VALUES (
-		      #{comHolidayDate}, #{comHolidayName}, #{comHolidayType}, #{memberId}, 1
+		      #{comHolidayDate}, #{comHolidayName}, #{comHolidayType}, #{memberId}, 1, NOW()
 		    )
 		  </insert>
 		
@@ -70,7 +70,6 @@
 		    SELECT COUNT(*)
 		    FROM company_holiday
 		    WHERE com_holiday_date = #{_parameter}
-			AND com_holiday_is_active = 1
 		  </select>
 		
 		
