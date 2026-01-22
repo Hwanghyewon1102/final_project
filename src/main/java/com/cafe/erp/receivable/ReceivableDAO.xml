@@ -858,4 +858,32 @@
     )
 </insert>
 
+<select id="selectReceivablePayStatus"
+        parameterType="string"
+        resultType="string">
+    SELECT
+        CASE
+            WHEN IFNULL(SUM(
+                CASE WHEN rt.transaction_type = 'P'
+                     THEN rt.transaction_amount
+                     ELSE 0 END
+            ), 0) = 0 THEN 'O'
+
+            WHEN IFNULL(SUM(
+                CASE WHEN rt.transaction_type = 'P'
+                     THEN rt.transaction_amount
+                     ELSE 0 END
+            ), 0) >= r.receivable_total_amount THEN 'C'
+
+            ELSE 'P'
+        END
+    FROM receivable r
+    LEFT JOIN receivable_transaction rt
+      ON r.receivable_id = rt.receivable_id
+    WHERE r.receivable_id = #{receivableId}
+    GROUP BY r.receivable_total_amount
+</select>
+
+
+
 </mapper>

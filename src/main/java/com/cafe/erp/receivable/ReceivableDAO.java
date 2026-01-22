@@ -104,6 +104,12 @@ public interface ReceivableDAO {
     );
 
     
+    String selectReceivablePayStatus(String receivableId);
+
+    void updateReceivableStatus(
+        @Param("receivableId") String receivableId,
+        @Param("status") String status
+    );
     
     
     

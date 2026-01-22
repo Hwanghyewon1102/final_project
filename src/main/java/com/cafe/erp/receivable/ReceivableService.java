@@ -234,10 +234,8 @@ public class ReceivableService {
             HqPayablePaymentDTO paymentDTO,
             UserDTO userDTO
     ) {
-        // 로그인 사용자
         Integer memberId = userDTO.getMember().getMemberId();
 
-        // 파라미터 검증
         if (paymentDTO.getReceivableId() == null || paymentDTO.getReceivableId().isBlank()) {
             throw new IllegalArgumentException("채권 정보가 없습니다.");
         }
@@ -247,7 +245,6 @@ public class ReceivableService {
             throw new IllegalArgumentException("지급 금액이 올바르지 않습니다.");
         }
 
-        //  해당 채권의 남은 금액 조회
         Integer remainAmount =
                 dao.selectReceivableRemainAmount(paymentDTO.getReceivableId());
 
@@ -259,7 +256,7 @@ public class ReceivableService {
             throw new IllegalArgumentException("지급 금액이 남은 미지급 금액을 초과했습니다.");
         }
 
-        //  지급 트랜잭션 insert
+        // 1️⃣ 지급 트랜잭션 insert
         ReceivableCollectionRequestDTO insertDTO =
                 new ReceivableCollectionRequestDTO();
 
@@ -269,6 +266,16 @@ public class ReceivableService {
         insertDTO.setMemberId(memberId);
 
         dao.insertHqPayment(insertDTO);
+
+        // 2️⃣ 지급 후 상태 재계산
+        String status =
+                dao.selectReceivablePayStatus(paymentDTO.getReceivableId());
+
+        // 3️⃣ receivable 상태 update
+        dao.updateReceivableStatus(
+                paymentDTO.getReceivableId(),
+                status
+        );
     }
 
 }
